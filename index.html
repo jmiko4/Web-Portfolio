@@ -35,7 +35,10 @@
 <body>
     <div id="info">Use WASD keys to move, Space and Shift for up and down, and mouse to look around</div>
     <div id="overlay">Click to start</div>
+    <!-- Include Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Include GLTFLoader -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
         // Scene setup
         const scene = new THREE.Scene();
@@ -69,16 +72,44 @@
 
         createStars();
 
-        // Create spaceship
-        const shipGeometry = new THREE.BoxGeometry(1, 0.5, 2); // Adjusted size for better visuals
-        const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        const ship = new THREE.Mesh(shipGeometry, shipMaterial);
-        scene.add(ship);
+ // Variables for the ship and model loader
+        let ship;
+        let shipModel;
+        const loader = new THREE.GLTFLoader();
 
-        // Make the camera a child of the ship
-        ship.add(camera);
-        camera.position.set(0, 1, -5); // Position camera behind and above the ship
-        camera.lookAt(ship.position);
+        // Load the ship model
+        loader.load(
+            // Path to your model (make sure the path is correct)
+            'rocket_ship_-_low_poly/scene.gltf',
+            function (gltf) {
+                ship = new THREE.Object3D();
+                shipModel = gltf.scene;
+
+                // Adjust scale, position, and rotation
+                shipModel.scale.set(1, 1, 1);
+                shipModel.position.set(0, 0, 0);
+                shipModel.rotation.z = .78; // Adjust rotation
+                shipModel.rotation.x = 1.1; // Adjust rotation
+
+                ship.add(shipModel);
+                scene.add(ship);
+
+                // Camera setup
+                ship.add(camera);
+                camera.position.set(0, 2, -10);
+                camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+                animate();
+            },
+            function (xhr) {
+                // Called while loading is progressing
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            function (error) {
+                // Called when loading has errors
+                console.error('An error happened', error);
+            }
+        );
 
         // Handle window resize
         window.addEventListener('resize', () => {
@@ -157,23 +188,25 @@
         document.addEventListener('pointerlockerror', onPointerLockError, false);
 
         function onMouseMove(event) {
+            if (!ship) return;
+
             const movementX = event.movementX || 0;
             const movementY = event.movementY || 0;
 
             yaw -= movementX * rotationSpeed;
             pitch += movementY * rotationSpeed;
 
-            // Limit the pitch angle to prevent flip over
             const PI_2 = Math.PI / 2;
             pitch = Math.max(-PI_2, Math.min(PI_2, pitch));
 
             ship.rotation.y = yaw;
             ship.rotation.x = pitch;
-        }
+}
 
         function animate() {
             requestAnimationFrame(animate);
             handleKeys();
+            shipModel.rotation.y += .005;
             renderer.render(scene, camera);
         }
 

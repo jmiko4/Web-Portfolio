@@ -1,100 +1,216 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Space Portfolio</title>
-<style>
-body { margin: 0; }
-canvas { display: block; }
-#info {
-position: absolute;
-top: 10px;
-left: 10px;
-color: white;
-font-family: Arial, sans-serif;
-font-size: 18px;
-}
-</style>
+    <title>Space Portfolio</title>
+    <style>
+        body { margin: 0; overflow: hidden; } /* Hide scrollbars */
+        canvas { display: block; }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            z-index: 1;
+        }
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            z-index: 2;
+        }
+    </style>
 </head>
 <body>
-<div id="info">Use WASD keys to move forward/backward and mouse to look around</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-// Scene setup
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+    <div id="info">Use WASD keys to move, Space and Shift for up and down, and mouse to look around</div>
+    <div id="overlay">Click to start</div>
+    <!-- Include Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Include GLTFLoader -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.002); // Add some fog for depth
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-// Add lighting
-const ambientLight = new THREE.AmbientLight(0x404040);
-scene.add(ambientLight);
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+        scene.add(ambientLight);
 
-camera.position.set(0, 5, -10);
+        // Create stars
+        function createStars() {
+            const starGeometry = new THREE.BufferGeometry();
+            const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2 });
 
-// Create stars
-function createStars() {
-const starGeometry = new THREE.BufferGeometry();
-const starMaterial = new THREE.PointsMaterial({ size: 0.2 });
+            const stars = [];
+            for(let i = 0; i < 5000; i++) {
+                const x = (Math.random() - 0.5) * 1000;
+                const y = (Math.random() - 0.5) * 1000;
+                const z = (Math.random() - 0.5) * 1000;
+                stars.push(x, y, z);
+            }
 
-// Generate random positions for stars
-const stars = [];
-for(let i = 0; i < 5000; i++) {
-const x = (Math.random() - 0.5) * 100;
-const y = (Math.random() - 0.5) * 100;
-const z = (Math.random() - 0.5) * 100;
-stars.push(x, y, z);
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(stars, 3));
+            const starMesh = new THREE.Points(starGeometry, starMaterial);
+            scene.add(starMesh);
+        }
+
+        createStars();
+
+ // Variables for the ship and model loader
+        let ship;
+        let shipModel;
+        const loader = new THREE.GLTFLoader();
+
+        // Load the ship model
+        loader.load(
+            // Path to your model (make sure the path is correct)
+            'rocket_ship_-_low_poly/scene.gltf',
+            function (gltf) {
+                ship = new THREE.Object3D();
+                shipModel = gltf.scene;
+
+                // Adjust scale, position, and rotation
+                shipModel.scale.set(1, 1, 1);
+                shipModel.position.set(0, 0, 0);
+                shipModel.rotation.z = .78; // Adjust rotation
+                shipModel.rotation.x = 1.1; // Adjust rotation
+
+                ship.add(shipModel);
+                scene.add(ship);
+
+                // Camera setup
+                ship.add(camera);
+                camera.position.set(0, 2, -10);
+                camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+                animate();
+            },
+            function (xhr) {
+                // Called while loading is progressing
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            function (error) {
+                // Called when loading has errors
+                console.error('An error happened', error);
+            }
+        );
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Movement controls
+        const moveSpeed = 1.0;
+        const rotationSpeed = 0.002;
+        let keypressed = {};
+
+        document.addEventListener('keydown', (e) => {
+            keypressed[e.key.toLowerCase()] = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keypressed[e.key.toLowerCase()] = false;
+        });
+
+        function handleKeys() {
+            const delta = moveSpeed * 0.1;
+
+            // Forward and backward
+            if(keypressed['w']) {
+                ship.translateZ(delta);
+            }
+            if(keypressed['s']) {
+                ship.translateZ(-delta);
+            }
+
+            // Left and right strafing
+            if(keypressed['a']) {
+                ship.translateX(delta);
+            }
+            if(keypressed['d']) {
+                ship.translateX(-delta);
+            }
+
+            // Up and down
+            if(keypressed[' ']) { // Space key
+                ship.translateY(delta);
+            }
+            if(keypressed['shift']) { // Shift key
+                ship.translateY(-delta);
+            }
+        }
+
+        // Mouse movement
+        let yaw = 0;
+        let pitch = 0;
+
+        // Pointer lock setup
+        const overlay = document.getElementById('overlay');
+        overlay.addEventListener('click', function() {
+            overlay.style.display = 'none'; // Hide overlay
+            document.body.requestPointerLock();
+        });
+
+        function onPointerLockChange() {
+            if (document.pointerLockElement === document.body) {
+                document.addEventListener('mousemove', onMouseMove, false);
+            } else {
+                document.removeEventListener('mousemove', onMouseMove, false);
+                overlay.style.display = ''; // Show overlay
+            }
+        }
+
+        function onPointerLockError() {
+            overlay.style.display = ''; // Show overlay
+            alert('Pointer Lock failed');
+        }
+
+        document.addEventListener('pointerlockchange', onPointerLockChange, false);
+        document.addEventListener('pointerlockerror', onPointerLockError, false);
+
+        function onMouseMove(event) {
+            if (!ship) return;
+
+            const movementX = event.movementX || 0;
+            const movementY = event.movementY || 0;
+
+            yaw -= movementX * rotationSpeed;
+            pitch += movementY * rotationSpeed;
+
+            const PI_2 = Math.PI / 2;
+            pitch = Math.max(-PI_2, Math.min(PI_2, pitch));
+
+            ship.rotation.y = yaw;
+            ship.rotation.x = pitch;
 }
 
-starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(stars, 3));
-const starMesh = new THREE.Points(starGeometry, starMaterial);
-scene.add(starMesh);
-}
+        function animate() {
+            requestAnimationFrame(animate);
+            handleKeys();
+            shipModel.rotation.y += .01;
+            renderer.render(scene, camera);
+        }
 
-createStars();
-
-// Create spaceship
-const shipGeometry = new THREE.BoxGeometry(1, 0.5, 0.5);
-const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const ship = new THREE.Mesh(shipGeometry, shipMaterial);
-scene.add(ship);
-
-// Position the camera relative to the ship
-camera.position.set(0, 1, -3);
-camera.lookAt(ship.position);
-
-// Handle window resize
-window.addEventListener('resize', () => {
-camera.aspect = window.innerWidth / window.innerHeight;
-camera.updateProjectionMatrix();
-renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-// Add basic movement controls (Step 2 will expand this)
-document.addEventListener('keydown', onKeyDown);
-document.addEventListener('mousemove', onMouseMove);
-
-function onKeyDown(event) {
-switch(event.key) {
-case 'w':
-camera.position.z -= 0.5;
-break;
-case 's':
-camera.position.z += 0.5;
-break;
-case 'a':
-camera.position.x -= 0.5;
-break;
-case 'd':
-camera.position.x += 0.5;
-break;
-}
-renderer.render(scene, camera);
-}
-
-function onMouseMove(event) {
-// This will be expanded in Step 2
-}
-</script>
+        animate();
+    </script>
 </body>
 </html>
