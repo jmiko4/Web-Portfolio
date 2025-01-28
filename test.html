@@ -106,11 +106,12 @@
             // Create the initial text after the font is loaded
             createText('Welcome to Justin\'s \n    Portfolio Space', new THREE.Vector3(0, 10, 75),0,Math.PI,0);
             createText('     Fly around to\nexplore my portfolio', new THREE.Vector3(0, -20, 150),.3,Math.PI,0);
-            createText('               I created this site\n    to showcase both my portfolio\n     and my programming abilities\n         turn around and explore          \nto discover my skills and experience', new THREE.Vector3(0, 10, -100),0,0,0);
+            createText('                I created this site\n     to showcase both my portfolio\n      and my programming abilities\n          turn around and explore          \nto discover my skills and experience', new THREE.Vector3(0, 10, -100),0,0,0);
 
-            // Create additional texts
-            createText('Work Experience', new THREE.Vector3(50, 0, 200),0,Math.PI+.25,0);
-            createText('Acquired Skills', new THREE.Vector3(-50, 0, 150),0,Math.PI-.25,0);
+            // Planet Labels
+            createText('Other Websites', new THREE.Vector3(100, 0, 150),0,Math.PI+.45,0);
+            createText('Work Experience', new THREE.Vector3(0,40, 200),-0.3,Math.PI,0);
+            createText('Acquired Skills', new THREE.Vector3(-100, 0, 125),0,Math.PI-.45,0);
 
         });
 
@@ -168,7 +169,7 @@
         // Load the ship model
         loader.load(
             // Path to your model (make sure the path is correct)
-            'rocket_ship_-_low_poly/scene.gltf',
+            'models/rocket_ship_-_low_poly/scene.gltf',
             function (gltf) {
                 ship = new THREE.Object3D();
                 shipModel = gltf.scene;
