@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Space Portfolio</title>
     <style>
-        body { margin: 0; overflow: hidden; } /* Hide scrollbars */
-        canvas { display: block; }
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Hide scrollbars */
+        canvas {
+            display: block;
+        }
+
         #info {
             position: absolute;
             top: 10px;
@@ -14,6 +23,7 @@
             font-size: 18px;
             z-index: 1;
         }
+
         #overlay {
             position: absolute;
             top: 0;
@@ -32,19 +42,26 @@
         }
     </style>
 </head>
+
 <body>
-    <div id="info">Use WASD keys to move, Space and Shift for up and down, and mouse to look around</div>
+    <div id="info">Use WASD keys to move, Space and Shift for up and down, and mouse to look around. R will reset the
+        ship to its original position</div>
     <div id="overlay">Click to start</div>
     <!-- Include Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Include GLTFLoader -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- Include FontLoader -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
+
     <script>
         // Scene setup
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x000000, 0.002); // Add some fog for depth
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
@@ -55,10 +72,13 @@
         // Create stars
         function createStars() {
             const starGeometry = new THREE.BufferGeometry();
-            const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2 });
+            const starMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 0.2
+            });
 
             const stars = [];
-            for(let i = 0; i < 5000; i++) {
+            for (let i = 0; i < 5000; i++) {
                 const x = (Math.random() - 0.5) * 1000;
                 const y = (Math.random() - 0.5) * 1000;
                 const z = (Math.random() - 0.5) * 1000;
@@ -72,7 +92,71 @@
 
         createStars();
 
- // Variables for the ship and model loader
+        // Initialize the FontLoader
+        // Declare the font variable in a scope accessible to your functions
+        let font;
+
+        // Initialize the FontLoader
+        const fontLoader = new THREE.FontLoader();
+
+        // Load the font
+        fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.json', function (loadedFont) {
+            font = loadedFont;
+
+            // Create the initial text after the font is loaded
+            createText('Welcome to Justin\'s \n    Portfolio Space', new THREE.Vector3(0, 0, 100),1);
+            // Create additional texts
+            createText('Explore the Universe', new THREE.Vector3(100, 10, 200),1);
+            createText('Discover New Worlds', new THREE.Vector3(-150, -5, 300),1);
+
+            // You can create more texts as needed
+        });
+
+        // Load the font and create text
+        function createText(textString, position, rotation) {
+
+            // Ensure the font is loaded
+            if (!font) {
+                console.error('Font not loaded yet.');
+                return;
+            }
+
+            // Create the TextGeometry
+            const textGeometry = new THREE.TextGeometry(textString, {
+                font: font,
+                size: 5,
+                height: .5,
+                curveSegments: 12,
+                bevelEnabled: false
+            });
+
+            // Center the text geometry
+            textGeometry.computeBoundingBox();
+
+            if (textGeometry.boundingBox) {
+                const bbox = textGeometry.boundingBox;
+                const xMid = -0.5 * (bbox.max.x - bbox.min.x);
+                const yMid = -0.5 * (bbox.max.y - bbox.min.y);
+                const zMid = -0.5 * (bbox.max.z - bbox.min.z);
+                textGeometry.translate(xMid, yMid, zMid);
+            }
+
+            // Create a MeshStandardMaterial (or any material you prefer)
+            const textMaterial = new THREE.MeshStandardMaterial({
+                color: 0xffffff
+            });
+            const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+
+            // Position the textMesh at the specified position
+            textMesh.position.copy(position);
+
+            // Optionally, rotate the text if desired
+            textMesh.rotation.y = Math.PI / rotation; // Rotate 45 degrees around Y-axis
+
+            scene.add(textMesh);
+        }
+
+        // Variables for the ship and model loader
         let ship;
         let shipModel;
         const loader = new THREE.GLTFLoader();
@@ -89,14 +173,14 @@
                 shipModel.scale.set(1, 1, 1);
                 shipModel.position.set(0, 0, 0);
                 shipModel.rotation.z = .78; // Adjust rotation
-                shipModel.rotation.x = 1.1; // Adjust rotation
+                shipModel.rotation.x = 1.15; // Adjust rotation
 
                 ship.add(shipModel);
                 scene.add(ship);
 
                 // Camera setup
                 ship.add(camera);
-                camera.position.set(0, 2, -10);
+                camera.position.set(0, 1.5, -7.5);
                 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
                 animate();
@@ -119,7 +203,7 @@
         });
 
         // Movement controls
-        const moveSpeed = 1.0;
+        const moveSpeed = 0.5;
         const rotationSpeed = 0.0005;
         let keypressed = {};
 
@@ -135,27 +219,35 @@
             const delta = moveSpeed * 0.1;
 
             // Forward and backward
-            if(keypressed['w']) {
+            if (keypressed['w']) {
                 ship.translateZ(delta);
             }
-            if(keypressed['s']) {
+            if (keypressed['s']) {
                 ship.translateZ(-delta);
             }
 
             // Left and right strafing
-            if(keypressed['a']) {
+            if (keypressed['a']) {
                 ship.translateX(delta);
             }
-            if(keypressed['d']) {
+            if (keypressed['d']) {
                 ship.translateX(-delta);
             }
 
             // Up and down
-            if(keypressed[' ']) { // Space key
+            if (keypressed[' ']) { // Space key
                 ship.translateY(delta);
             }
-            if(keypressed['shift']) { // Shift key
+            if (keypressed['shift']) { // Shift key
                 ship.translateY(-delta);
+            }
+
+            //Reset to original position
+            if (keypressed['r']) {
+                ship.position.set(0, 0, 0);
+                ship.rotation.set(0, 0, 0);
+                yaw = 0;
+                pitch = 0;
             }
         }
 
@@ -165,7 +257,7 @@
 
         // Pointer lock setup
         const overlay = document.getElementById('overlay');
-        overlay.addEventListener('click', function() {
+        overlay.addEventListener('click', function () {
             overlay.style.display = 'none'; // Hide overlay
             document.body.requestPointerLock();
         });
@@ -214,11 +306,12 @@
         function animate() {
             requestAnimationFrame(animate);
             handleKeys();
-            shipModel.rotation.y += .005;
+            shipModel.rotation.y += .002;
             renderer.render(scene, camera);
         }
 
         animate();
     </script>
 </body>
+
 </html>

@@ -96,7 +96,7 @@
 
                 // Camera setup
                 ship.add(camera);
-                camera.position.set(0, 2, -10);
+                camera.position.set(0, 1.5, -7.5);
                 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
                 animate();
@@ -161,6 +161,9 @@
             //Reset to original position
             if(keypressed['r']) {
                 ship.position.set(0, 0, 0);
+                ship.rotation.set(0, 0, 0);
+                yaw = 0;
+                pitch = 0;
             }
         }
 
@@ -219,7 +222,9 @@
         function animate() {
             requestAnimationFrame(animate);
             handleKeys();
-            shipModel.rotation.y += .002;
+            if(shipModel){
+                shipModel.rotation.y += .002;
+            }
             renderer.render(scene, camera);
         }
 
