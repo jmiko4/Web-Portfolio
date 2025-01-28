@@ -104,16 +104,18 @@
             font = loadedFont;
 
             // Create the initial text after the font is loaded
-            createText('Welcome to Justin\'s \n    Portfolio Space', new THREE.Vector3(0, 0, 100),1);
-            // Create additional texts
-            createText('Explore the Universe', new THREE.Vector3(100, 10, 200),1);
-            createText('Discover New Worlds', new THREE.Vector3(-150, -5, 300),1);
+            createText('Welcome to Justin\'s \n    Portfolio Space', new THREE.Vector3(0, 10, 75),0,Math.PI,0);
+            createText('     Fly around to\nexplore my portfolio', new THREE.Vector3(0, -20, 150),.3,Math.PI,0);
+            createText('               I created this site\n    to showcase both my portfolio\n     and my programming abilities\n         turn around and explore          \nto discover my skills and experience', new THREE.Vector3(0, 10, -100),0,0,0);
 
-            // You can create more texts as needed
+            // Create additional texts
+            createText('Work Experience', new THREE.Vector3(50, 0, 200),0,Math.PI+.25,0);
+            createText('Acquired Skills', new THREE.Vector3(-50, 0, 150),0,Math.PI-.25,0);
+
         });
 
         // Load the font and create text
-        function createText(textString, position, rotation) {
+        function createText(textString, position, rotationX, rotationY, rotationZ) {
 
             // Ensure the font is loaded
             if (!font) {
@@ -124,7 +126,7 @@
             // Create the TextGeometry
             const textGeometry = new THREE.TextGeometry(textString, {
                 font: font,
-                size: 5,
+                size: 4,
                 height: .5,
                 curveSegments: 12,
                 bevelEnabled: false
@@ -151,7 +153,9 @@
             textMesh.position.copy(position);
 
             // Optionally, rotate the text if desired
-            textMesh.rotation.y = Math.PI / rotation; // Rotate 45 degrees around Y-axis
+            textMesh.rotation.y = rotationY; // Rotation around Y-axis
+            textMesh.rotation.x = rotationX; // Rotation around X-axis
+            textMesh.rotation.z = rotationZ; // Rotation around Z-axis
 
             scene.add(textMesh);
         }
@@ -203,7 +207,7 @@
         });
 
         // Movement controls
-        const moveSpeed = 0.5;
+        const moveSpeed = 1;
         const rotationSpeed = 0.0005;
         let keypressed = {};
 
