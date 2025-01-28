@@ -3,7 +3,7 @@
 <head>
     <title>Space Portfolio</title>
     <style>
-        body { margin: 0; }
+        body { margin: 0; overflow: hidden; } /* Hide scrollbars */
         canvas { display: block; }
         #info {
             position: absolute;
@@ -12,37 +12,53 @@
             color: white;
             font-family: Arial, sans-serif;
             font-size: 18px;
+            z-index: 1;
+        }
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            z-index: 2;
         }
     </style>
 </head>
 <body>
-    <div id="info">Use WASD keys to move, Space and Shift for up and down and mouse to look around</div>
+    <div id="info">Use WASD keys to move, Space and Shift for up and down, and mouse to look around</div>
+    <div id="overlay">Click to start</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         // Scene setup
         const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.002); // Add some fog for depth
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
         // Add lighting
-        const ambientLight = new THREE.AmbientLight(0x404040);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1);
         scene.add(ambientLight);
-
-        camera.position.set(0, 5, -10);
 
         // Create stars
         function createStars() {
             const starGeometry = new THREE.BufferGeometry();
-            const starMaterial = new THREE.PointsMaterial({ size: 0.2 });
+            const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2 });
 
-            // Generate random positions for stars
             const stars = [];
             for(let i = 0; i < 5000; i++) {
-                const x = (Math.random() - 0.5) * 100;
-                const y = (Math.random() - 0.5) * 100;
-                const z = (Math.random() - 0.5) * 100;
+                const x = (Math.random() - 0.5) * 1000;
+                const y = (Math.random() - 0.5) * 1000;
+                const z = (Math.random() - 0.5) * 1000;
                 stars.push(x, y, z);
             }
 
@@ -54,13 +70,14 @@
         createStars();
 
         // Create spaceship
-        const shipGeometry = new THREE.BoxGeometry(1, 0.5, 0.5);
+        const shipGeometry = new THREE.BoxGeometry(1, 0.5, 2); // Adjusted size for better visuals
         const shipMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         const ship = new THREE.Mesh(shipGeometry, shipMaterial);
         scene.add(ship);
 
-        // Position the camera relative to the ship
-        camera.position.set(0, 1, -3);
+        // Make the camera a child of the ship
+        ship.add(camera);
+        camera.position.set(0, 1, -5); // Position camera behind and above the ship
         camera.lookAt(ship.position);
 
         // Handle window resize
@@ -70,66 +87,88 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // Add basic movement controls
-        const moveSpeed = 0.5;
+        // Movement controls
+        const moveSpeed = 1.0;
+        const rotationSpeed = 0.002;
         let keypressed = {};
 
         document.addEventListener('keydown', (e) => {
-            keypressed[e.key] = true;
+            keypressed[e.key.toLowerCase()] = true;
         });
 
         document.addEventListener('keyup', (e) => {
-            delete keypressed[e.key];
+            keypressed[e.key.toLowerCase()] = false;
         });
 
         function handleKeys() {
-            // W movement
-            if(keypressed['w'] || keypressed['W']) {
-                // Move ship forward
-                const delta = moveSpeed * 0.1;
-                ship.position.z += delta;
-                camera.position.z += delta; // Move camera forward with the ship
-                camera.lookAt(ship.position);
+            const delta = moveSpeed * 0.1;
+
+            // Forward and backward
+            if(keypressed['w']) {
+                ship.translateZ(delta);
+            }
+            if(keypressed['s']) {
+                ship.translateZ(-delta);
             }
 
-            // S movement
-            if(keypressed['s'] || keypressed['S']) {
-                const delta = moveSpeed * 0.1;
-                ship.position.z -= delta;
-                camera.position.z -= delta;
-                camera.lookAt(ship.position);
+            // Left and right strafing
+            if(keypressed['a']) {
+                ship.translateX(delta);
+            }
+            if(keypressed['d']) {
+                ship.translateX(-delta);
             }
 
-            // A movement
-            if(keypressed['a'] || keypressed['A']) {
-                const delta = moveSpeed * 0.1;
-                ship.position.x += delta;
-                camera.position.x += delta;
-                camera.lookAt(ship.position);
+            // Up and down
+            if(keypressed[' ']) { // Space key
+                ship.translateY(delta);
             }
+            if(keypressed['shift']) { // Shift key
+                ship.translateY(-delta);
+            }
+        }
 
-            // D movement
-            if(keypressed['d'] || keypressed['D']) {
-                const delta = moveSpeed * 0.1;
-                ship.position.x -= delta;
-                camera.position.x -= delta;
-                camera.lookAt(ship.position);
-            }
+        // Mouse movement
+        let yaw = 0;
+        let pitch = 0;
 
-            // Space movement
-            if(keypressed[' ']) {
-                const delta = moveSpeed * 0.1;
-                ship.position.y += delta;
-                camera.position.y += delta;
-                camera.lookAt(ship.position);
-            }
+        // Pointer lock setup
+        const overlay = document.getElementById('overlay');
+        overlay.addEventListener('click', function() {
+            overlay.style.display = 'none'; // Hide overlay
+            document.body.requestPointerLock();
+        });
 
-            if(keypressed['Shift']) {
-                const delta = moveSpeed * 0.1;
-                ship.position.y -= delta;
-                camera.position.y -= delta;
-                camera.lookAt(ship.position);
+        function onPointerLockChange() {
+            if (document.pointerLockElement === document.body) {
+                document.addEventListener('mousemove', onMouseMove, false);
+            } else {
+                document.removeEventListener('mousemove', onMouseMove, false);
+                overlay.style.display = ''; // Show overlay
             }
+        }
+
+        function onPointerLockError() {
+            overlay.style.display = ''; // Show overlay
+            alert('Pointer Lock failed');
+        }
+
+        document.addEventListener('pointerlockchange', onPointerLockChange, false);
+        document.addEventListener('pointerlockerror', onPointerLockError, false);
+
+        function onMouseMove(event) {
+            const movementX = event.movementX || 0;
+            const movementY = event.movementY || 0;
+
+            yaw -= movementX * rotationSpeed;
+            pitch += movementY * rotationSpeed;
+
+            // Limit the pitch angle to prevent flip over
+            const PI_2 = Math.PI / 2;
+            pitch = Math.max(-PI_2, Math.min(PI_2, pitch));
+
+            ship.rotation.y = yaw;
+            ship.rotation.x = pitch;
         }
 
         function animate() {
