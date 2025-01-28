@@ -120,7 +120,7 @@
 
         // Movement controls
         const moveSpeed = 1.0;
-        const rotationSpeed = 0.002;
+        const rotationSpeed = 0.0005;
         let keypressed = {};
 
         document.addEventListener('keydown', (e) => {
@@ -199,14 +199,22 @@
             const PI_2 = Math.PI / 2;
             pitch = Math.max(-PI_2, Math.min(PI_2, pitch));
 
-            ship.rotation.y = yaw;
-            ship.rotation.x = pitch;
-}
+            // Create quaternions for pitch and yaw
+            const quaternionPitch = new THREE.Quaternion();
+            const quaternionYaw = new THREE.Quaternion();
+
+            // Set up quaternion rotations around the X and Y axes
+            quaternionPitch.setFromAxisAngle(new THREE.Vector3(1, 0, 0), pitch);
+            quaternionYaw.setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
+
+            // Combine the pitch and yaw rotations
+            ship.quaternion.copy(quaternionYaw).multiply(quaternionPitch);
+        }
 
         function animate() {
             requestAnimationFrame(animate);
             handleKeys();
-            shipModel.rotation.y += .01;
+            shipModel.rotation.y += .005;
             renderer.render(scene, camera);
         }
 
