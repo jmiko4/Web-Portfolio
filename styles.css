@@ -42,18 +42,35 @@ canvas {
     display: flex;
     flex-direction: row;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    opacity: 1;
+    transition: opacity 0.5s ease;
     font-family: Arial, sans-serif;
     font-size: 32px;
     color: white;
     z-index: 1;
-    transition: all 1s ease; /* Transition for smooth movement */
     background-color: rgba(0, 0, 0, 0.7); /* Transparent black background */
     border-radius: 10px; /* Rounded edges */
     padding: 20px; /* Optional: Add some padding */
     text-align: center;
+}
+
+/* Center position class */
+#info.center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Corner position class */
+#info.corner {
+    top: 10px;
+    left: 10px;
+    font-size: 18px; /* Smaller font size for corner */
+}
+
+/* Fade out class */
+#info.fade-out {
+    opacity: 0;
 }
 
 #info-left{
@@ -71,17 +88,11 @@ canvas {
     flex:2;}
 
 /* Styles when #info moves to the top-left corner */
-#info.moveToCorner #info-left {
+#info.corner #info-left {
     display:none; /* Hide the left section */
 }
-#info.moveToCorner {
-    margin:0;
-    font-size: 18px; /* Smaller font size for the corner position */
-    top: 10px;
-    left: 10px;
-    transform: none; /* Remove the translate transformation */
-}
-#info.moveToCorner p{
+
+#info.corner p{
     margin:0;
 }
 

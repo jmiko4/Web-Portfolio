@@ -420,6 +420,8 @@ let pitch = 0;
 // Pointer lock setup
 const overlay = document.getElementById('overlay');
 const infoDiv = document.getElementById('info');
+// Add the center class initially
+infoDiv.classList.add('center');
 // Function to handle start click
 overlay.addEventListener('click', function () {
     // Hide the overlay
@@ -429,10 +431,22 @@ overlay.addEventListener('click', function () {
     document.body.requestPointerLock();
 
 
-    // After a delay, move the infoDiv to the top-left corner
-    setTimeout(function () {
-        infoDiv.classList.add('moveToCorner');
-    }, 3000); // Delay in milliseconds (3000ms = 3 seconds)
+    // First fade out
+    setTimeout(() => {
+        infoDiv.classList.add('fade-out');
+
+        // After fade out completes, change position and fade back in
+        setTimeout(() => {
+            // Remove center class and add corner class
+            infoDiv.classList.remove('center');
+            infoDiv.classList.add('corner');
+
+            // Remove fade out and trigger fade in
+            setTimeout(() => {
+                infoDiv.classList.remove('fade-out');
+            }, 50); // Small delay to ensure position change is complete
+        }, 500); // Match this with the transition duration (0.5s = 500ms)
+    }, 3000); // Initial delay before starting the transition
 });
 
 function onPointerLockChange() {
