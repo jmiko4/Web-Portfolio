@@ -186,6 +186,10 @@ canvas {
     margin-top: 0;
     color: #222;
 }
+
+#planetInfoContent a{
+    text-decoration: none;
+}
 /* Fade-in Animation */
 @keyframes slideIn {
     from {

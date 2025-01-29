@@ -212,12 +212,12 @@ loadPlanet('models/Mars.glb', new THREE.Vector3(55, 0, 550), 150, '<h2>Wedding P
 loadPlanet('models/Saturn.glb', new THREE.Vector3(-60, 0, 475), 15, '<h2>Web Developer</h2><h3>Mid City Nursery Inc.</h3><h4>April 2022 - September 2022</h4> <ul> <li>Redesigned and coded the <a href="https://www.midcitynursery.com/">Mid City Nursery website</a> to add new functionality and improve customer experience.   </li> <li>Worked closely with the company owner to satisfy his expectations.    </li> <li>Utilized HTML, CSS, JavaScript, and jQuery to add features and design the website. </li> </ul>');
 
 
-loadPlanet('models/Jupiter.glb', new THREE.Vector3(105, -20, 150), .2, '<h2>Miko.Photos</h2><p>Information about Planet Two.</p>');
-loadPlanet('models/Venus.glb', new THREE.Vector3(180, -20, 130), .2, '<h2>Planet Three</h2><p>Information about Planet Three.</p>');
+loadPlanet('models/Jupiter.glb', new THREE.Vector3(105, -20, 150), .2, '<h2><a href="https://miko.photos/">Miko.Photos</a></h2><ul><li>My photography portfolio</li><li>Designed and programmed by me</li><li>Photos and videos also taken by me</li></ul>');
+loadPlanet('models/Venus.glb', new THREE.Vector3(180, -20, 130), .2, '<h2><a href="https://www.midcitynursery.com/">MidCityNursery.com</a></h2><ul><li>Website I redesigned and programmed for local plant nursery Mid City Nursery Inc.</li><li>Worked closely with the company owner to satisfy his expectations.</li><li>To see the website before my redesign click <a href="https://web.archive.org/web/20210227004213/https://www.midcitynursery.com/index.htm">here</a></li></ul>');
 
-loadPlanet('models/Moon.glb', new THREE.Vector3(-100, -10, 100), .3, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
+loadPlanet('models/Moon.glb', new THREE.Vector3(-100, -10, 100), .3, '<h2>Key Skills</h2><ul><li>Experienced in Java, HTML, CSS, Python, C#, JavaScript, C, C++, Cypress, TensorFlow, YAML, SQL</li><li>Fluent in Spanish</li><li>Proficient in Adobe Lightroom, Premiere Pro</li></ul>');
 
-loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, '<h2>My cats</h2><img  src="images/cats.jpg" alt="My cats" style="width: 100%; height: auto;">');
+loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, '<h2>My cats</h2><img  src="images/cats.jpg" alt="Please Hire Me (image of my cats)" style="width: 100%; height: auto;">');
 
 loadPlanet('models/Sun.glb', new THREE.Vector3(500, 0, 0), 1, '<h2>Why space?</h2><p>Space is cool</p>');
 
