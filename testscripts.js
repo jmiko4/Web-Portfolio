@@ -251,14 +251,17 @@ function interactWithPlanet(planet) {
 function displayPlanetInfo(planet) {
     const overlay = document.getElementById('planetInfoOverlay');
     const content = document.getElementById('planetInfoContent');
-    const closeButton = document.getElementById('closeOverlayButton');
+    
 
     // Pause the pointer lock to allow interaction with the overlay
     document.exitPointerLock();
 
     // Populate the content based on the planet
-    content.innerHTML = planet.userData.infoContent;
-
+    content.innerHTML = `
+        <button id="closeOverlayButton" class="close-button"><i class="fas fa-times"></i></button>
+        ${planet.userData.infoContent}
+    `;
+    const closeButton = document.getElementById('closeOverlayButton');
     // Show the overlay
     overlay.style.display = 'flex';
 

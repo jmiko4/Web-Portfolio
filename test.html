@@ -4,18 +4,19 @@
 <head>
     <title>Space Portfolio</title>
     <link rel="stylesheet" href="teststyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 
 <body>
     <div id="info">Use WASD keys to move, Space and Shift for up and down, and mouse to look around. R will reset the
         ship to its original position</div>
     <div id="overlay">Click to start</div>
-    <!-- Add this HTML for the overlay -->
+    <!-- Planet info overlay -->
     <div id="planetInfoOverlay" style="display: none;">
         <div id="planetInfoContent">
+            <button id="closeOverlayButton" class="close-button"><i class="fas fa-times"></i></button>
             <!-- Planet information will be injected here -->
         </div>
-        <button id="closeOverlayButton">Close</button>
     </div>
     <!-- Include Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

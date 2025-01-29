@@ -62,3 +62,15 @@ canvas {
 #closeOverlayButton {
     margin-top: 10px;
 }
+
+/* Fade-in Animation */
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
