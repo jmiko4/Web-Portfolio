@@ -113,7 +113,7 @@ fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.js
     createText('Acquired Skills', new THREE.Vector3(-75, -10, 75), 0, Math.PI - .65, 0);
 
     // Planet Labels
-    createText('Software Engineer\n            Intern', new THREE.Vector3(50, 0, 320), 0, Math.PI, 0);
+    createText('Software Engineer\n            Intern', new THREE.Vector3(50, 0, 310), 0, Math.PI, 0);
     createText('Quality Assurance\n   Engineer Intern', new THREE.Vector3(-50, 5, 275), 0, Math.PI, 0);
     createText('Wedding Photographer\n     & Videographer', new THREE.Vector3(55, 0, 525), 0, Math.PI, 0);
     createText('Web Developer', new THREE.Vector3(-60, 0, 440), 0, Math.PI, 0);
@@ -221,6 +221,37 @@ loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, '<h2>Why space?</
 
 loadPlanet('models/Sun.glb', new THREE.Vector3(500, 0, 0), 1, '<h2>The Sun</h2><p>The sun is a deadly lazer</p>');
 
+// Load the asteroid belt but don't add it to the planets array
+loader.load(
+    'models/Asteroids.glb',
+    function (gltf) {
+        const asteroidBelt = gltf.scene;
+
+        // Adjust scale and position
+        asteroidBelt.scale.set(50, 50, 50);
+        asteroidBelt.position.set(-250, 0, -20);
+
+        // Optionally, adjust rotation
+        asteroidBelt.rotation.y = Math.PI / 2; // adjust as needed
+
+        scene.add(asteroidBelt);
+    },
+    undefined,
+    function (error) {
+        console.error('An error occurred while loading the asteroid belt:', error);
+    }
+);
+
+function rotatePlanets() {
+    planets.forEach(planet => {
+        if (planet) {
+            planet.rotation.y += 0.0005; // Adjust the rotation speed as needed
+        }
+    });
+}
+
+
+
 
 
 // Handle window resize
@@ -237,7 +268,10 @@ let nearbyPlanet = null;
 
 function checkPlanetProximity() {
     if (!ship) return; // Ensure ship is loaded
+    if (planets.length === 0) return;
+
     nearbyPlanet = null; // Reset the nearby planet
+    let isNearPlanet = false;
 
     // The distance threshold for interaction
     const interactionDistance = 75; // Adjust as necessary
@@ -251,13 +285,27 @@ function checkPlanetProximity() {
         const distance = planet.position.distanceTo(ship.position);
         if (distance < interactionDistance) {
             nearbyPlanet = planet;
-
+            isNearPlanet = true;
             // Visual feedback (e.g., highlight the planet)
             setPlanetHighlight(planet, true);
         } else {
             setPlanetHighlight(planet, false);
         }
     });
+
+    // Show or hide the interaction prompt
+    const interactionPrompt = document.getElementById('interactionPrompt');
+    if (isNearPlanet) {
+        if (!interactionPrompt.classList.contains('show')) {
+            interactionPrompt.classList.remove('hide');
+            interactionPrompt.classList.add('show');
+        }
+    } else {
+        if (interactionPrompt.classList.contains('show')) {
+            interactionPrompt.classList.remove('show');
+            interactionPrompt.classList.add('hide');
+        }
+    }
 }
 
 function setPlanetHighlight(planet, highlight) {
@@ -269,13 +317,6 @@ function setPlanetHighlight(planet, highlight) {
 }
 
 function interactWithPlanet(planet) {
-    // For demonstration, we'll open an alert or navigate to another page
-    // You can customize this to display information or load content dynamically
-
-    // Example: Navigate to another page
-    // window.location.href = 'planet_info.html';
-
-    // Example: Display information in an overlay
     displayPlanetInfo(planet);
 
 }
@@ -441,6 +482,7 @@ function animate() {
     if (shipModel) {
         shipModel.rotation.y += .001;
     }
+    rotatePlanets();
 }
 
 animate();
