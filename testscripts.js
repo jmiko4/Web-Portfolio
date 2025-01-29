@@ -11,6 +11,18 @@ document.body.appendChild(renderer.domElement);
 // Add lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
+// Add a directional light to simulate the sun
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+directionalLight.position.set(500, 0, 0); // Position the light (x, y, z)
+directionalLight.castShadow = true; // Enable shadow casting
+scene.add(directionalLight);
+directionalLight.shadow.mapSize.width = 1024; // Adjust shadow map resolution
+directionalLight.shadow.mapSize.height = 1024;
+directionalLight.shadow.camera.near = 0.5;
+directionalLight.shadow.camera.far = 500;
+const sunLight = new THREE.PointLight(0xffddaa, 4, 1000);
+sunLight.position.set(400, 75, 0); // Position the light at the sun's position
+scene.add(sunLight);
 
 // Create stars
 function createStars() {
@@ -37,6 +49,47 @@ createStars();
 
 
 
+// Variables for the ship and model loader
+let ship;
+let shipModel;
+const loader = new THREE.GLTFLoader();
+
+// Load the ship model
+loader.load(
+    // Path to your model (make sure the path is correct)
+    'models/rocket_ship_-_low_poly/scene.gltf',
+    function (gltf) {
+        ship = new THREE.Object3D();
+        shipModel = gltf.scene;
+
+        // Adjust scale, position, and rotation
+        shipModel.scale.set(1, 1, 1);
+        shipModel.position.set(0, 0, 0);
+        shipModel.rotation.z = .78; // Adjust rotation
+        shipModel.rotation.x = 1.15; // Adjust rotation
+
+        ship.add(shipModel);
+        scene.add(ship);
+
+        // Camera setup
+        ship.add(camera);
+        camera.position.set(0, 1.5, -7.5);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        animate();
+    },
+    function (xhr) {
+        // Called while loading is progressing
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    function (error) {
+        // Called when loading has errors
+        console.error('An error happened', error);
+    }
+);
+
+
+
 
 // Initialize the FontLoader
 // Declare the font variable in a scope accessible to your functions
@@ -54,10 +107,19 @@ fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.js
     createText('     Fly around to\nexplore my portfolio', new THREE.Vector3(0, -20, 150),.3,Math.PI,0);
     createText('                I created this site\n     to showcase both my portfolio\n      and my programming abilities\n          turn around and explore          \nto discover my skills and experience', new THREE.Vector3(0, 10, -100),0,0,0);
 
+    // Group Labels
+    createText('Other Websites', new THREE.Vector3(75, -10, 75),0,Math.PI+.75,0);
+    createText('Work Experience', new THREE.Vector3(0,25, 250),-0.3,Math.PI,0);
+    createText('Acquired Skills', new THREE.Vector3(-75, -10, 75),0,Math.PI-.65,0);
+
     // Planet Labels
-    createText('Other Websites', new THREE.Vector3(100, 0, 150),0,Math.PI+.5,0);
-    createText('Work Experience', new THREE.Vector3(0,40, 200),-0.3,Math.PI,0);
-    createText('Acquired Skills', new THREE.Vector3(-100, 0, 125),0,Math.PI-.45,0);
+    createText('Software Engineer\n            Intern', new THREE.Vector3(50,0 ,320),0,Math.PI,0);
+    createText('Quality Assurance\n   Engineer Intern', new THREE.Vector3(-50, 0, 275), 0, Math.PI, 0);
+    createText('Wedding Photographer\n     & Videographer', new THREE.Vector3(45, 0, 475),0,Math.PI,0);
+    createText('Web Developer', new THREE.Vector3(-50, 0, 415),0,Math.PI,0);
+    createText('Miko.Photos', new THREE.Vector3(90, 0, 130),0,Math.PI+.65,0);
+    createText('MidCityNursery.com', new THREE.Vector3(160, 0, 110),0,Math.PI+.65,0);
+
 
 });
 
@@ -110,45 +172,6 @@ function createText(textString, position, rotationX, rotationY, rotationZ) {
 
 
 
-// Variables for the ship and model loader
-let ship;
-let shipModel;
-const loader = new THREE.GLTFLoader();
-
-// Load the ship model
-loader.load(
-    // Path to your model (make sure the path is correct)
-    'models/rocket_ship_-_low_poly/scene.gltf',
-    function (gltf) {
-        ship = new THREE.Object3D();
-        shipModel = gltf.scene;
-
-        // Adjust scale, position, and rotation
-        shipModel.scale.set(1, 1, 1);
-        shipModel.position.set(0, 0, 0);
-        shipModel.rotation.z = .78; // Adjust rotation
-        shipModel.rotation.x = 1.15; // Adjust rotation
-
-        ship.add(shipModel);
-        scene.add(ship);
-
-        // Camera setup
-        ship.add(camera);
-        camera.position.set(0, 1.5, -7.5);
-        camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-        animate();
-    },
-    function (xhr) {
-        // Called while loading is progressing
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-    },
-    function (error) {
-        // Called when loading has errors
-        console.error('An error happened', error);
-    }
-);
-
 
 
 // Array to store planet meshes
@@ -183,11 +206,20 @@ function loadPlanet(path, position, scale, infoContent) {
     );
 }
 // Example positions behind the text (adjust as needed)
-loadPlanet('models/Earth.glb', new THREE.Vector3(0, 0, 100), 1,'<h2>Planet One</h2><p>Information about Planet One.</p>');
-loadPlanet('models/Jupiter.glb', new THREE.Vector3(160, -20, 200), .2,'<h2>Planet Two</h2><p>Information about Planet Two.</p>');
-loadPlanet('models/Venus.glb', new THREE.Vector3(100, -20, 220), .2,'<h2>Planet Three</h2><p>Information about Planet Three.</p>');
-loadPlanet('models/Mars.glb', new THREE.Vector3(-160, 0, 200), 150,'<h2>Planet Four</h2><p>Information about Planet Four.</p>');
+loadPlanet('models/Earth.glb', new THREE.Vector3(-50, 0, 300), 2, '<h2>Quality Assurance Engineer Intern,</h2><h1>The Church of Jesus Christ of Latter-Day Saints</h1><p>Information about Planet One.</p>');
+loadPlanet('models/Neptune2.glb', new THREE.Vector3(50, -30, 345), 1, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
+loadPlanet('models/Mars.glb', new THREE.Vector3(45, 0, 500), 150, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
+loadPlanet('models/Saturn.glb', new THREE.Vector3(-50, 0, 450), 15, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
+
+
+loadPlanet('models/Jupiter.glb', new THREE.Vector3(105, -20, 150), .2,'<h2>Planet Two</h2><p>Information about Planet Two.</p>');
+loadPlanet('models/Venus.glb', new THREE.Vector3(180, -20, 130), .2, '<h2>Planet Three</h2><p>Information about Planet Three.</p>');
+
+loadPlanet('models/Moon.glb', new THREE.Vector3(-100, -10, 100), .3, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
+
 loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5,'<h2>Planet Five</h2><p>Information about Planet Five.</p>');
+
+loadPlanet('models/Sun.glb', new THREE.Vector3(500, 0, 0), 1, '<h2>The Sun</h2><p>The sun is a deadly lazer</p>');
 
 
 
@@ -298,17 +330,29 @@ function handleKeys() {
     // Forward and backward
     if (keypressed['w']) {
         ship.translateZ(delta);
+        if (shipModel) {
+            shipModel.rotation.y += .004;
+        }
     }
     if (keypressed['s']) {
         ship.translateZ(-delta);
+        if (shipModel) {
+            shipModel.rotation.y += .002;
+        }
     }
 
     // Left and right strafing
     if (keypressed['a']) {
         ship.translateX(delta);
+        if (shipModel) {
+            shipModel.rotation.y += .002;
+        }
     }
     if (keypressed['d']) {
         ship.translateX(-delta);
+        if (shipModel) {
+            shipModel.rotation.y += .002;
+        }
     }
 
     // Up and down
@@ -396,11 +440,11 @@ function animate() {
     requestAnimationFrame(animate);
     if (!ship) return;
     handleKeys();
-    if (shipModel) {
-        shipModel.rotation.y += .002;
-    }
     checkPlanetProximity();
     renderer.render(scene, camera);
+    if (shipModel) {
+        shipModel.rotation.y += .001;
+    }
 }
 
 animate();
