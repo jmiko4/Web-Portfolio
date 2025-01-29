@@ -65,6 +65,7 @@ canvas {
     position: relative;
     box-shadow: 0 15px 30px rgba(0,0,0,0.1);
     animation: slideIn 0.3s ease; /* Slide-in animation */
+    text-align: center;
 }
 
 #closeOverlayButton {
@@ -81,16 +82,33 @@ canvas {
 #closeOverlayButton:hover {
     color: #000;
 }
-#planetInfoContent p {
+#planetInfoContent ul{
+    text-align: left;
+}
+#planetInfoContent li {
     color: #333;
     line-height: 1.6;
+    position: relative;
+    padding-left: 20px;
+    list-style-type: none; /* Remove default list style */
+}
+
+#planetInfoContent li::before {
+    content: '★';
+    position: absolute;
+    left: 0;
+    color: #ffcc00; /* Gold color for the star */
+    font-size: 1.2em;
 }
 
 #planetInfoContent h2 {
     margin-top: 0;
     color: #111;
 }
-
+#planetInfoContent h3 {
+    margin-top: 0;
+    color: #222;
+}
 /* Fade-in Animation */
 @keyframes slideIn {
     from {

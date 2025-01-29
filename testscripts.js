@@ -103,22 +103,22 @@ fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.js
     font = loadedFont;
 
     // Create the initial text after the font is loaded
-    createText('Welcome to Justin\'s \n    Portfolio Space', new THREE.Vector3(0, 10, 75),0,Math.PI,0);
-    createText('     Fly around to\nexplore my portfolio', new THREE.Vector3(0, -20, 150),.3,Math.PI,0);
-    createText('                I created this site\n     to showcase both my portfolio\n      and my programming abilities\n          turn around and explore          \nto discover my skills and experience', new THREE.Vector3(0, 10, -100),0,0,0);
+    createText('Welcome to Justin\'s \n    Portfolio Space', new THREE.Vector3(0, 10, 75), 0, Math.PI, 0);
+    createText('     Fly around to\nexplore my portfolio', new THREE.Vector3(0, -20, 150), .3, Math.PI, 0);
+    createText('                I created this site\n     to showcase both my portfolio\n      and my programming abilities\n          turn around and explore          \nto discover my skills and experience', new THREE.Vector3(0, 10, -100), 0, 0, 0);
 
     // Group Labels
-    createText('Other Websites', new THREE.Vector3(75, -10, 75),0,Math.PI+.75,0);
-    createText('Work Experience', new THREE.Vector3(0,25, 250),-0.3,Math.PI,0);
-    createText('Acquired Skills', new THREE.Vector3(-75, -10, 75),0,Math.PI-.65,0);
+    createText('Other Websites', new THREE.Vector3(75, -10, 75), 0, Math.PI + .75, 0);
+    createText('Work Experience', new THREE.Vector3(0, 25, 250), -0.3, Math.PI, 0);
+    createText('Acquired Skills', new THREE.Vector3(-75, -10, 75), 0, Math.PI - .65, 0);
 
     // Planet Labels
-    createText('Software Engineer\n            Intern', new THREE.Vector3(50,0 ,320),0,Math.PI,0);
-    createText('Quality Assurance\n   Engineer Intern', new THREE.Vector3(-50, 0, 275), 0, Math.PI, 0);
-    createText('Wedding Photographer\n     & Videographer', new THREE.Vector3(45, 0, 475),0,Math.PI,0);
-    createText('Web Developer', new THREE.Vector3(-50, 0, 415),0,Math.PI,0);
-    createText('Miko.Photos', new THREE.Vector3(90, 0, 130),0,Math.PI+.65,0);
-    createText('MidCityNursery.com', new THREE.Vector3(160, 0, 110),0,Math.PI+.65,0);
+    createText('Software Engineer\n            Intern', new THREE.Vector3(50, 0, 320), 0, Math.PI, 0);
+    createText('Quality Assurance\n   Engineer Intern', new THREE.Vector3(-50, 5, 275), 0, Math.PI, 0);
+    createText('Wedding Photographer\n     & Videographer', new THREE.Vector3(55, 0, 525), 0, Math.PI, 0);
+    createText('Web Developer', new THREE.Vector3(-60, 0, 440), 0, Math.PI, 0);
+    createText('Miko.Photos', new THREE.Vector3(90, 0, 130), 0, Math.PI + .65, 0);
+    createText('MidCityNursery.com', new THREE.Vector3(160, 0, 110), 0, Math.PI + .65, 0);
 
 
 });
@@ -206,18 +206,18 @@ function loadPlanet(path, position, scale, infoContent) {
     );
 }
 // Example positions behind the text (adjust as needed)
-loadPlanet('models/Earth.glb', new THREE.Vector3(-50, 0, 300), 2, '<h2>Quality Assurance Engineer Intern,</h2><h1>The Church of Jesus Christ of Latter-Day Saints</h1><p>Information about Planet One.</p>');
-loadPlanet('models/Neptune2.glb', new THREE.Vector3(50, -30, 345), 1, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
-loadPlanet('models/Mars.glb', new THREE.Vector3(45, 0, 500), 150, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
-loadPlanet('models/Saturn.glb', new THREE.Vector3(-50, 0, 450), 15, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
+loadPlanet('models/Earth.glb', new THREE.Vector3(-50, 0, 300), 2, '<h2>Quality Assurance Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day Saints</h3><ul> <li>Tested components for ComeUntoChrist.org a worldwide website with over 50,000 monthly visitors. </li> <li>Worked in a team environment with experienced developers and managers. </li> <li>Utilized industry leading manual, automated, and performance testing methods including Cypress Automated Testing with YAML pipeline integration.</li> </ul>');
+loadPlanet('models/Neptune2.glb', new THREE.Vector3(50, -30, 345), 1, '<h2>Software Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day Saints</h3><ul> <li>Maintained and developed components for ComeUntoChrist.org a worldwide website with over 50,000 monthly visitors  </li> <li>Worked in a team environment with experienced developers and managers.  </li> <li>Utilized JavaScript, Node JS, HTML, CSS to deliver refined results to our page visitors.</li> </ul>');
+loadPlanet('models/Mars.glb', new THREE.Vector3(55, 0, 550), 150, '<h2>Wedding Photographer & Videographer</h2><h3>Freelance</h3><ul> <li>Wedding, Portrait, Couples, and Family Photoshoots.  </li> <li>Wedding videography for various clients.   </li> <li>Extensive experience using Adobe Lightroom, Premiere Pro, and Davinci Resolve. </li> </ul>');
+loadPlanet('models/Saturn.glb', new THREE.Vector3(-60, 0, 475), 15, '<h2>Web Developer</h2><h3>Mid City Nursery Inc.</h3> <ul> <li>Redesigned and coded the Mid City Nursery website to add new functionality and improve customer experience.   </li> <li>Worked closely with the company owner to satisfy his expectations.    </li> <li>Utilized HTML, CSS, JavaScript, and jQuery to add features and design the website. </li> </ul>');
 
 
-loadPlanet('models/Jupiter.glb', new THREE.Vector3(105, -20, 150), .2,'<h2>Planet Two</h2><p>Information about Planet Two.</p>');
+loadPlanet('models/Jupiter.glb', new THREE.Vector3(105, -20, 150), .2, '<h2>Planet Two</h2><p>Information about Planet Two.</p>');
 loadPlanet('models/Venus.glb', new THREE.Vector3(180, -20, 130), .2, '<h2>Planet Three</h2><p>Information about Planet Three.</p>');
 
 loadPlanet('models/Moon.glb', new THREE.Vector3(-100, -10, 100), .3, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
 
-loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5,'<h2>Planet Five</h2><p>Information about Planet Five.</p>');
+loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, '<h2>Why space?</h2><p>Space is cool</p>');
 
 loadPlanet('models/Sun.glb', new THREE.Vector3(500, 0, 0), 1, '<h2>The Sun</h2><p>The sun is a deadly lazer</p>');
 
@@ -277,13 +277,13 @@ function interactWithPlanet(planet) {
 
     // Example: Display information in an overlay
     displayPlanetInfo(planet);
-    
+
 }
 
 function displayPlanetInfo(planet) {
     const overlay = document.getElementById('planetInfoOverlay');
     const content = document.getElementById('planetInfoContent');
-    
+
 
     // Pause the pointer lock to allow interaction with the overlay
     document.exitPointerLock();
@@ -299,7 +299,7 @@ function displayPlanetInfo(planet) {
     overlay.classList.add('active');
 
     // Add an event listener to close the overlay
-    closeButton.onclick = function() {
+    closeButton.onclick = function () {
         overlay.style.display = 'none';
 
         // Request pointer lock again
@@ -355,12 +355,8 @@ function handleKeys() {
         }
     }
 
-    // Up and down
-    if (keypressed[' ']) { // Space key
-        ship.translateY(delta);
-    }
-    if (keypressed['shift']) { // Shift key
-        ship.translateY(-delta);
+    if (keypressed[' ']) { // Space bar for boost
+        ship.translateZ(delta * 2);
     }
 
     //Reset to original position
