@@ -113,7 +113,7 @@ fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.js
     createText('Acquired Skills', new THREE.Vector3(-75, -10, 75), 0, Math.PI - .65, 0);
 
     // Planet Labels
-    createText('Software Engineer\n            Intern', new THREE.Vector3(50, 0, 310), 0, Math.PI, 0);
+    createText('Software Engineer\n            Intern', new THREE.Vector3(50, 0, 305), 0, Math.PI, 0);
     createText('Quality Assurance\n   Engineer Intern', new THREE.Vector3(-50, 5, 275), 0, Math.PI, 0);
     createText('Wedding Photographer\n     & Videographer', new THREE.Vector3(55, 0, 525), 0, Math.PI, 0);
     createText('Web Developer', new THREE.Vector3(-60, 0, 440), 0, Math.PI, 0);
