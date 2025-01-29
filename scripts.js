@@ -352,11 +352,21 @@ function displayPlanetInfo(planet) {
 
 
 
-// Movement controls
+// Physics constants
+const ACCELERATION = 0.005; // How quickly we speed up
+const MAX_VELOCITY = 4.0;   // Maximum speed
+const DRAG = 0.99;         // Drag coefficient (1 = no drag, 0.99 = slight drag)
+const ROTATION_DRAG = 0.95; // Drag for rotation
+const BOOST_MULTIPLIER = 2; // How much faster boost makes you go
+
+// Movement variables
+let velocity = new THREE.Vector3(0, 0, 0);    // Current velocity
+let rotationalVelocity = new THREE.Vector3(0, 0, 0); // Current rotational velocity
 const moveSpeed = 2;
 const rotationSpeed = 0.0005;
 let keypressed = {};
 
+// Event listeners
 document.addEventListener('keydown', (e) => {
     keypressed[e.key.toLowerCase()] = true;
 });
@@ -366,51 +376,74 @@ document.addEventListener('keyup', (e) => {
 });
 
 function handleKeys() {
-    const delta = moveSpeed * 0.1;
+    if (!ship) return;
 
-    // Forward and backward
-    if (keypressed['w']) {
-        ship.translateZ(delta);
+    // Calculate acceleration based on ship's orientation
+    const forward = new THREE.Vector3(0, 0, -1);
+    const right = new THREE.Vector3(1, 0, 0);
+    forward.applyQuaternion(ship.quaternion);
+    right.applyQuaternion(ship.quaternion);
+
+    // Apply acceleration based on input
+    if (keypressed['w'] && !keypressed[' ']) {
+        velocity.add(forward.multiplyScalar(-ACCELERATION));
         if (shipModel) {
             shipModel.rotation.y += .004;
         }
     }
     if (keypressed['s']) {
-        ship.translateZ(-delta);
+        velocity.add(forward.multiplyScalar(ACCELERATION));
         if (shipModel) {
             shipModel.rotation.y += .002;
         }
     }
-
-    // Left and right strafing
     if (keypressed['a']) {
-        ship.translateX(delta);
+        velocity.add(right.multiplyScalar(ACCELERATION/2));
         if (shipModel) {
             shipModel.rotation.y += .002;
         }
     }
     if (keypressed['d']) {
-        ship.translateX(-delta);
+        velocity.add(right.multiplyScalar(-ACCELERATION/2));
         if (shipModel) {
             shipModel.rotation.y += .002;
         }
     }
 
-    if (keypressed[' ']) { // Space bar for boost
-        ship.translateZ(delta * 2);
+    // Boost
+    if (keypressed[' '] && keypressed['w']) {
+        velocity.add(forward.multiplyScalar(-ACCELERATION * BOOST_MULTIPLIER));
+        if (shipModel) {
+            shipModel.rotation.y += .01;
+        }
     }
 
-    //Reset to original position
+    // Reset position and velocity
     if (keypressed['r']) {
         ship.position.set(0, 0, 0);
         ship.rotation.set(0, 0, 0);
+        velocity.set(0, 0, 0);
+        rotationalVelocity.set(0, 0, 0);
         yaw = 0;
         pitch = 0;
     }
-    //Interact with planet
+
+    // Interact with planet
     if (keypressed['e'] && nearbyPlanet) {
         interactWithPlanet(nearbyPlanet);
     }
+
+    // Apply drag
+    velocity.multiplyScalar(DRAG);
+    rotationalVelocity.multiplyScalar(ROTATION_DRAG);
+
+    // Limit maximum velocity
+    if (velocity.length() > MAX_VELOCITY) {
+        velocity.normalize().multiplyScalar(MAX_VELOCITY);
+    }
+
+    // Apply velocity to position
+    ship.position.add(velocity);
 }
 
 // Mouse movement
