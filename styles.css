@@ -11,7 +11,8 @@ canvas {
 
 #interactionPrompt {
     position: absolute;
-    bottom: 50px; /* Adjust as needed */
+    bottom: 50px;
+    /* Adjust as needed */
     left: 50%;
     transform: translateX(-50%);
     padding: 10px 20px;
@@ -20,8 +21,10 @@ canvas {
     font-family: Arial, sans-serif;
     font-size: 18px;
     border-radius: 5px;
-    z-index: 2; /* Above the canvas but below overlays */
-    opacity: 0; /* Initially hidden */
+    z-index: 2;
+    /* Above the canvas but below overlays */
+    opacity: 0;
+    /* Initially hidden */
     /* display: none; Hidden by default */
     transition: opacity 0.3s ease;
 }
@@ -48,9 +51,12 @@ canvas {
     font-size: 32px;
     color: white;
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.7); /* Transparent black background */
-    border-radius: 10px; /* Rounded edges */
-    padding: 20px; /* Optional: Add some padding */
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Transparent black background */
+    border-radius: 10px;
+    /* Rounded edges */
+    padding: 20px;
+    /* Optional: Add some padding */
     text-align: center;
 }
 
@@ -65,7 +71,8 @@ canvas {
 #info.corner {
     top: 10px;
     left: 10px;
-    font-size: 18px; /* Smaller font size for corner */
+    font-size: 18px;
+    /* Smaller font size for corner */
 }
 
 /* Fade out class */
@@ -73,27 +80,30 @@ canvas {
     opacity: 0;
 }
 
-#info-left{
-    display:flex;
+#info-left {
+    display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    flex:1;
+    flex: 1;
 }
-#info-right{
-    display:flex;
+
+#info-right {
+    display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    flex:2;}
+    flex: 2;
+}
 
 /* Styles when #info moves to the top-left corner */
 #info.corner #info-left {
-    display:none; /* Hide the left section */
+    display: none;
+    /* Hide the left section */
 }
 
-#info.corner p{
-    margin:0;
+#info.corner p {
+    margin: 0;
 }
 
 #overlay {
@@ -121,15 +131,20 @@ canvas {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 3;
-    display: none; /* Hidden by default */
+    display: none;
+    /* Hidden by default */
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.3s ease; /* Smooth transition */
+    transition: opacity 0.3s ease;
+    /* Smooth transition */
 }
+
 #planetInfoOverlay.active {
-    display: flex; /* Show the overlay */
-    opacity: 1; /* Fully opaque */
+    display: flex;
+    /* Show the overlay */
+    opacity: 1;
+    /* Fully opaque */
 }
 
 #planetInfoContent {
@@ -140,8 +155,9 @@ canvas {
     max-height: 80%;
     overflow-y: auto;
     position: relative;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-    animation: slideIn 0.3s ease; /* Slide-in animation */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease;
+    /* Slide-in animation */
     text-align: center;
 }
 
@@ -156,25 +172,30 @@ canvas {
     color: #888;
     transition: color 0.2s ease;
 }
+
 #closeOverlayButton:hover {
     color: #000;
 }
-#planetInfoContent ul{
+
+#planetInfoContent ul {
     text-align: left;
 }
+
 #planetInfoContent li {
     color: #333;
     line-height: 1.6;
     position: relative;
     padding-left: 20px;
-    list-style-type: none; /* Remove default list style */
+    list-style-type: none;
+    /* Remove default list style */
 }
 
 #planetInfoContent li::before {
     content: '★';
     position: absolute;
     left: 0;
-    color: #ffcc00; /* Gold color for the star */
+    color: #ffcc00;
+    /* Gold color for the star */
     font-size: 1.2em;
 }
 
@@ -182,20 +203,23 @@ canvas {
     margin-top: 0;
     color: #111;
 }
+
 #planetInfoContent h3 {
     margin-top: 0;
     color: #222;
 }
 
-#planetInfoContent a{
+#planetInfoContent a {
     text-decoration: none;
 }
+
 /* Fade-in Animation */
 @keyframes slideIn {
     from {
         transform: translateY(20px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
