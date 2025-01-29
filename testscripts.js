@@ -264,6 +264,7 @@ function displayPlanetInfo(planet) {
     const closeButton = document.getElementById('closeOverlayButton');
     // Show the overlay
     overlay.style.display = 'flex';
+    overlay.classList.add('active');
 
     // Add an event listener to close the overlay
     closeButton.onclick = function() {
