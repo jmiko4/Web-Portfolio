@@ -8,10 +8,22 @@
 </head>
 
 <body>
-    <div id="info">Use WASD keys to move, mouse to look around, and space to BOOST. R will reset the
-        ship to its original position</div>
+    <div id="info">
+        <div id="info-left">
+            <img src="images/wasd.png" alt="wasd keys" style="max-width: 20%; height: auto; filter: invert(1);">
+            <img src="images/mouse.png" alt="mouse" style="max-width: 20%; height: auto; filter: invert(1);">
+            <img src="images/spacebar.png" alt="space" style="max-width: 20%; height: auto; filter: invert(1);">
+            <img src="images/r-key.png" alt="r to reset" style="max-width: 20%; height: auto; filter: invert(1);"></div>
+        <div id="info-right">
+            <p>Use WASD keys to move</p>
+            <p>mouse to look around</p>
+            <p>space to BOOST.</p>
+            <p>R will reset the
+                ship to its original position</p>
+        </div>
+    </div>
     <div id="overlay">Click to start</div>
-    <div id="interactionPrompt" >Press E to interact</div>
+    <div id="interactionPrompt">Press E to interact</div>
     <!-- Planet info overlay -->
     <div id="planetInfoOverlay" style="display: none;">
         <div id="planetInfoContent">

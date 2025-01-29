@@ -206,20 +206,20 @@ function loadPlanet(path, position, scale, infoContent) {
     );
 }
 // Example positions behind the text (adjust as needed)
-loadPlanet('models/Earth.glb', new THREE.Vector3(-50, 0, 300), 2, '<h2>Quality Assurance Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day Saints</h3><ul> <li>Tested components for ComeUntoChrist.org a worldwide website with over 50,000 monthly visitors. </li> <li>Worked in a team environment with experienced developers and managers. </li> <li>Utilized industry leading manual, automated, and performance testing methods including Cypress Automated Testing with YAML pipeline integration.</li> </ul>');
-loadPlanet('models/Neptune2.glb', new THREE.Vector3(50, -30, 345), 1, '<h2>Software Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day Saints</h3><ul> <li>Maintained and developed components for ComeUntoChrist.org a worldwide website with over 50,000 monthly visitors  </li> <li>Worked in a team environment with experienced developers and managers.  </li> <li>Utilized JavaScript, Node JS, HTML, CSS to deliver refined results to our page visitors.</li> </ul>');
-loadPlanet('models/Mars.glb', new THREE.Vector3(55, 0, 550), 150, '<h2>Wedding Photographer & Videographer</h2><h3>Freelance</h3><ul> <li>Wedding, Portrait, Couples, and Family Photoshoots.  </li> <li>Wedding videography for various clients.   </li> <li>Extensive experience using Adobe Lightroom, Premiere Pro, and Davinci Resolve. </li> </ul>');
-loadPlanet('models/Saturn.glb', new THREE.Vector3(-60, 0, 475), 15, '<h2>Web Developer</h2><h3>Mid City Nursery Inc.</h3> <ul> <li>Redesigned and coded the Mid City Nursery website to add new functionality and improve customer experience.   </li> <li>Worked closely with the company owner to satisfy his expectations.    </li> <li>Utilized HTML, CSS, JavaScript, and jQuery to add features and design the website. </li> </ul>');
+loadPlanet('models/Earth.glb', new THREE.Vector3(-50, 0, 300), 2, '<h2>Quality Assurance Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day Saints </h3><h4>April 2023 - August 2023</h4><ul> <li>Tested components for <a href="https://www.churchofjesuschrist.org/comeuntochrist">ComeUntoChrist.org</a>, a worldwide website with over 50,000 monthly visitors. </li> <li>Worked in a team environment with experienced developers and managers. </li> <li>Utilized industry leading manual, automated, and performance testing methods including Cypress Automated Testing with YAML pipeline integration.</li> </ul>');
+loadPlanet('models/Neptune2.glb', new THREE.Vector3(50, -30, 345), 1, '<h2>Software Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day   </h3><h4>August 2023 - April 2024</h4><ul> <li>Maintained and developed components for <a href="https://www.churchofjesuschrist.org/comeuntochrist">ComeUntoChrist.org</a>, a worldwide website with over 50,000 monthly visitors  </li> <li>Worked in a team environment with experienced developers and managers.  </li> <li>Utilized JavaScript, Node JS, HTML, CSS to deliver refined results to our page visitors.</li> </ul>');
+loadPlanet('models/Mars.glb', new THREE.Vector3(55, 0, 550), 150, '<h2>Wedding Photographer & Videographer</h2><h3>Freelance</h3><h4>June 2021 - Present</h4><ul> <li>Wedding, Portrait, Couples, and Family Photoshoots.  </li> <li>Wedding videography for various clients.   </li> <li>Extensive experience using Adobe Lightroom, Premiere Pro, and Davinci Resolve. </li> </ul>');
+loadPlanet('models/Saturn.glb', new THREE.Vector3(-60, 0, 475), 15, '<h2>Web Developer</h2><h3>Mid City Nursery Inc.</h3><h4>April 2022 - September 2022</h4> <ul> <li>Redesigned and coded the <a href="https://www.midcitynursery.com/">Mid City Nursery website</a> to add new functionality and improve customer experience.   </li> <li>Worked closely with the company owner to satisfy his expectations.    </li> <li>Utilized HTML, CSS, JavaScript, and jQuery to add features and design the website. </li> </ul>');
 
 
-loadPlanet('models/Jupiter.glb', new THREE.Vector3(105, -20, 150), .2, '<h2>Planet Two</h2><p>Information about Planet Two.</p>');
+loadPlanet('models/Jupiter.glb', new THREE.Vector3(105, -20, 150), .2, '<h2>Miko.Photos</h2><p>Information about Planet Two.</p>');
 loadPlanet('models/Venus.glb', new THREE.Vector3(180, -20, 130), .2, '<h2>Planet Three</h2><p>Information about Planet Three.</p>');
 
 loadPlanet('models/Moon.glb', new THREE.Vector3(-100, -10, 100), .3, '<h2>Planet Four</h2><p>Information about Planet Four.</p>');
 
-loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, '<h2>Why space?</h2><p>Space is cool</p>');
+loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, '<h2>My cats</h2><img  src="images/cats.jpg" alt="My cats" style="width: 100%; height: auto;">');
 
-loadPlanet('models/Sun.glb', new THREE.Vector3(500, 0, 0), 1, '<h2>The Sun</h2><p>The sun is a deadly lazer</p>');
+loadPlanet('models/Sun.glb', new THREE.Vector3(500, 0, 0), 1, '<h2>Why space?</h2><p>Space is cool</p>');
 
 // Load the asteroid belt but don't add it to the planets array
 loader.load(
@@ -419,9 +419,20 @@ let pitch = 0;
 
 // Pointer lock setup
 const overlay = document.getElementById('overlay');
+const infoDiv = document.getElementById('info');
+// Function to handle start click
 overlay.addEventListener('click', function () {
-    overlay.style.display = 'none'; // Hide overlay
+    // Hide the overlay
+    overlay.style.display = 'none';
+
+    // Request pointer lock
     document.body.requestPointerLock();
+
+
+    // After a delay, move the infoDiv to the top-left corner
+    setTimeout(function () {
+        infoDiv.classList.add('moveToCorner');
+    }, 3000); // Delay in milliseconds (3000ms = 3 seconds)
 });
 
 function onPointerLockChange() {
