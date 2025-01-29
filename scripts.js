@@ -354,13 +354,13 @@ function displayPlanetInfo(planet) {
 
 // Physics constants
 const ACCELERATION = 0.005; // How quickly we speed up
-const MAX_VELOCITY = 4.0;   // Maximum speed
-const DRAG = 0.99;         // Drag coefficient (1 = no drag, 0.99 = slight drag)
+const MAX_VELOCITY = 4.0; // Maximum speed
+const DRAG = 0.99; // Drag coefficient (1 = no drag, 0.99 = slight drag)
 const ROTATION_DRAG = 0.95; // Drag for rotation
 const BOOST_MULTIPLIER = 2; // How much faster boost makes you go
 
 // Movement variables
-let velocity = new THREE.Vector3(0, 0, 0);    // Current velocity
+let velocity = new THREE.Vector3(0, 0, 0); // Current velocity
 let rotationalVelocity = new THREE.Vector3(0, 0, 0); // Current rotational velocity
 const moveSpeed = 2;
 const rotationSpeed = 0.0005;
@@ -398,13 +398,13 @@ function handleKeys() {
         }
     }
     if (keypressed['a']) {
-        velocity.add(right.multiplyScalar(ACCELERATION/2));
+        velocity.add(right.multiplyScalar(ACCELERATION / 2));
         if (shipModel) {
             shipModel.rotation.y += .002;
         }
     }
     if (keypressed['d']) {
-        velocity.add(right.multiplyScalar(-ACCELERATION/2));
+        velocity.add(right.multiplyScalar(-ACCELERATION / 2));
         if (shipModel) {
             shipModel.rotation.y += .002;
         }
