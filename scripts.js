@@ -111,6 +111,8 @@ fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.js
     createText('Other Websites', new THREE.Vector3(75, -10, 75), 0, Math.PI + .75, 0);
     createText('Work Experience', new THREE.Vector3(0, 25, 250), -0.3, Math.PI, 0);
     createText('Acquired Skills', new THREE.Vector3(-75, -10, 75), 0, Math.PI - .65, 0);
+    createText('Education', new THREE.Vector3(-120, -10, 20), 0, Math.PI /2, 0);
+
 
     // Planet Labels
     createText('Software Engineer\n            Intern', new THREE.Vector3(50, 0, 305), 0, Math.PI, 0);
@@ -215,7 +217,8 @@ loadPlanet('models/Saturn.glb', new THREE.Vector3(-60, 0, 475), 15, '<h2>Web Dev
 loadPlanet('models/Jupiter.glb', new THREE.Vector3(105, -20, 150), .2, '<h2><a href="https://miko.photos/" target="_blank">Miko.Photos</a></h2><ul><li>My photography portfolio</li><li>Designed and programmed by me</li><li>Photos and videos also taken by me</li></ul>');
 loadPlanet('models/Venus.glb', new THREE.Vector3(180, -20, 130), .2, '<h2><a href="https://www.midcitynursery.com" target="_blank">MidCityNursery.com</a></h2><ul><li>Website I redesigned and programmed for local plant nursery Mid City Nursery Inc.</li><li>Worked closely with the company owner to satisfy his expectations.</li><li>To see the website before my redesign click <a href="https://web.archive.org/web/20210227004213/https://www.midcitynursery.com/index.htm">here</a></li></ul>');
 
-loadPlanet('models/Moon.glb', new THREE.Vector3(-100, -10, 100), .3, '<h2>Key Skills</h2><ul><li>Experienced in Java, HTML, CSS, Python, C#, JavaScript, C, C++, Cypress, TensorFlow, YAML, SQL</li><li>Fluent in Spanish</li><li>Proficient in Adobe Lightroom, Premiere Pro</li></ul>');
+loadPlanet('models/Moon.glb', new THREE.Vector3(-90, -10, 100), .3, '<h2>Key Skills</h2><ul><li>Experienced in Java, HTML, CSS, Python, C#, JavaScript, C, C++, Cypress, TensorFlow, YAML, SQL</li><li>Fluent in Spanish</li><li>Proficient in Adobe Lightroom, Premiere Pro</li></ul>');
+loadPlanet('models/Jupiter2.glb', new THREE.Vector3(-150, -10, 30), .4, '<h2>Bachelor\'s of Science</h2><h3>Software Engineering</h3><h4>Graduated December 2024</h4><ul><li>Maintained a 4.0 GPA</li><li>Received an embedded systems and a computer programming certificate</li></ul>');
 
 loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, '<h2>My cats</h2><img  src="images/cats.jpg" alt="Please Hire Me (image of my cats)" style="width: 100%; height: auto;">');
 
@@ -385,25 +388,25 @@ function handleKeys() {
     right.applyQuaternion(ship.quaternion);
 
     // Apply acceleration based on input
-    if (keypressed['w'] && !keypressed[' ']) {
+    if ((keypressed['w']||keypressed['arrowup']) && !keypressed[' ']) {
         velocity.add(forward.multiplyScalar(-ACCELERATION));
         if (shipModel) {
             shipModel.rotation.y += .004;
         }
     }
-    if (keypressed['s']) {
+    if (keypressed['s']||keypressed['arrowdown']) {
         velocity.add(forward.multiplyScalar(ACCELERATION));
         if (shipModel) {
             shipModel.rotation.y += .002;
         }
     }
-    if (keypressed['a']) {
+    if (keypressed['a']||keypressed['arrowleft']) {
         velocity.add(right.multiplyScalar(ACCELERATION / 2));
         if (shipModel) {
             shipModel.rotation.y += .002;
         }
     }
-    if (keypressed['d']) {
+    if (keypressed['d']||keypressed['arrowright']) {
         velocity.add(right.multiplyScalar(-ACCELERATION / 2));
         if (shipModel) {
             shipModel.rotation.y += .002;
