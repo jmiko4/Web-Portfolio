@@ -17,6 +17,92 @@ window.addEventListener('resize', () => {
 });
 
 
+
+// Audio setup
+let backgroundMusic;
+let isMuted = false;
+const audioListener = new THREE.AudioListener();
+camera.add(audioListener);
+
+// Create a function to load and setup music
+function setupBackgroundMusic() {
+    backgroundMusic = new THREE.Audio(audioListener);
+    const audioLoader = new THREE.AudioLoader();
+
+    audioLoader.load('Ressurections.mp3', function(buffer) {
+        backgroundMusic.setBuffer(buffer);
+        backgroundMusic.setLoop(true);
+        backgroundMusic.setVolume(0.5);
+        // Don't autoplay - wait for user interaction
+    });
+}
+
+// Add music controls
+function setupAudioControls() {
+    // Create a floating music control panel
+    const audioControl = document.createElement('div');
+    audioControl.id = 'audioControl';
+    audioControl.innerHTML = `
+        <div class="audio-panel">
+            <button id="toggleMusic"><i class="fas fa-volume-up"></i></button>
+            <input type="range" id="volumeSlider" min="0" max="100" value="50">
+        </div>
+    `;
+    document.body.appendChild(audioControl);
+
+    // Style the control panel
+    const style = document.createElement('style');
+    style.textContent = `
+        .audio-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+        #toggleMusic {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+        }
+        #volumeSlider {
+            width: 100px;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Add event listeners
+    document.getElementById('toggleMusic').onclick = toggleMusic;
+    document.getElementById('volumeSlider').oninput = adjustVolume;
+}
+
+function toggleMusic() {
+    if (!backgroundMusic.isPlaying) {
+        backgroundMusic.play();
+        document.getElementById('toggleMusic').innerHTML = '<i class="fas fa-volume-up"></i>';
+    } else {
+        backgroundMusic.pause();
+        document.getElementById('toggleMusic').innerHTML = '<i class="fas fa-volume-mute"></i>';
+    }
+}
+
+function adjustVolume(e) {
+    const volume = e.target.value / 100;
+    backgroundMusic.setVolume(volume);
+}
+
+setupBackgroundMusic()
+setupAudioControls()
+
+
+
 // Add lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);

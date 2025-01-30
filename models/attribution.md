@@ -15,3 +15,5 @@ Planet by Quaternius (https://poly.pizza/m/9g1aIbfR9Y)
 Wasd icons created by manshagraphics - Flaticon
 Computer mouse icons created by Freepik - Flaticon
 R Key icon by Icons8
+Volume icons created by Bharat Icons - Flaticon
+esc key icon by Icons8
