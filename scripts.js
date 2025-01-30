@@ -6,6 +6,9 @@ const renderer = new THREE.WebGLRenderer({
     antialias: true
 });
 
+//Pi
+const pi = Math.PI;
+
 // Physics constants
 const ACCELERATION = 0.006; // How quickly we speed up
 const MAX_VELOCITY = 4.0; // Maximum speed
@@ -20,7 +23,7 @@ const moveSpeed = 2;
 const rotationSpeed = 0.0005;
 let keypressed = {};
 // Mouse movement
-let yaw = 0;
+let yaw = pi;
 let pitch = 0;
 
 // Variable to store if the player is near a planet
@@ -50,7 +53,6 @@ const loader = new THREE.GLTFLoader();
 let backgroundMusic;
 let isMuted = false;
 const audioListener = new THREE.AudioListener();
-
 
 
 
@@ -193,7 +195,7 @@ loader.load(
         ship = new THREE.Object3D();
         shipModel = gltf.scene;
 
-        ship.rotation.y = Math.PI; // Adjust rotation
+        ship.rotation.y = pi; // Adjust rotation
 
         // Adjust scale, position, and rotation
         shipModel.scale.set(1, 1, 1);
@@ -223,28 +225,30 @@ loader.load(
 
 
 // Load the font
-fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.json', function (loadedFont) {
+fontLoader.load('Font.json', function (loadedFont) {
     font = loadedFont;
 
     // Create the initial text after the font is loaded
-    createText('Welcome to Justin\'s \n    Portfolio Space', new THREE.Vector3(0, 10, 75), 0, Math.PI, 0);
-    createText('     Fly around to\nexplore my portfolio', new THREE.Vector3(0, -20, 150), .3, Math.PI, 0);
-    createText('                I created this site\n     to showcase both my portfolio\n      and my programming abilities\n          turn around and explore          \nto discover my skills and experience', new THREE.Vector3(0, 10, -100), 0, 0, 0);
+    createText('Welcome to Justin\'s \n  Portfolio Space', new THREE.Vector3(0, 40, -100), .3, 0, 0);
+    createText('      Turn around and explore          \nto discover my skills and experience', new THREE.Vector3(0, -10, -100), -.3, 0, 0);
 
     // Group Labels
-    createText('Other Websites', new THREE.Vector3(75, -10, 75), 0, Math.PI + .75, 0);
-    createText('Work Experience', new THREE.Vector3(0, 25, 250), -0.3, Math.PI, 0);
-    createText('Acquired Skills', new THREE.Vector3(-75, -10, 75), 0, Math.PI - .65, 0);
-    createText('Education', new THREE.Vector3(-120, -10, 20), 0, Math.PI / 2, 0);
+    createText('Acquired Skills', new THREE.Vector3(-75, -10, 75), 0, pi - .65, 0);
+    createText('Education', new THREE.Vector3(-100, -13, 30), 0, pi -.85 , 0);
 
 
     // Planet Labels
-    createText('Software Engineer\n            Intern', new THREE.Vector3(50, 0, 305), 0, Math.PI, 0);
-    createText('Quality Assurance\n   Engineer Intern', new THREE.Vector3(-50, 5, 275), 0, Math.PI, 0);
-    createText('Wedding Photographer\n     & Videographer', new THREE.Vector3(55, 0, 525), 0, Math.PI, 0);
-    createText('Web Developer', new THREE.Vector3(-60, 0, 440), 0, Math.PI, 0);
-    createText('Miko.Photos', new THREE.Vector3(70, 0, 100), 0, Math.PI + .65, 0);
-    createText('MidCityNursery.com', new THREE.Vector3(110, 0, 60), 0, Math.PI + .65, 0);
+    createText('Software Engineer\n            Intern', new THREE.Vector3(50, -13, 305), 0, pi, 0);
+    createText('Quality Assurance\n   Engineer Intern', new THREE.Vector3(-50, -13, 275), 0, pi, 0);
+    createText('Wedding Photographer\n     & Videographer', new THREE.Vector3(55, -13, 525), 0, pi, 0);
+    createText('Web Developer', new THREE.Vector3(-60, -13, 440), 0, pi, 0);
+    createText('Miko.Photos', new THREE.Vector3(70, -13, 100), 0, pi + .65, 0);
+    createText('MidCityNursery.com', new THREE.Vector3(110, -13, 60), 0, pi + .65, 0);
+
+    //Directions
+    createText('↑ Other Websites ↑', new THREE.Vector3(70, -50, 55), pi / 2 - .4, pi + .4, .7);
+    createText('       Work    \n↑   Experience   ↑', new THREE.Vector3(0, -30, 150), pi / 2 - .7, pi, 0);
+    createText('↑ Qualifications ↑', new THREE.Vector3(-70, -50, 55), pi / 2 - .4, pi - .4, -.7);
 
 
 });
@@ -323,7 +327,7 @@ function loadPlanet(path, position, scale, colliderScale, colliderOffset, infoCo
             });
 
             // Optionally, adjust rotation
-            // planet.rotation.y = Math.PI / 2; // adjust as needed
+            // planet.rotation.y = pi / 2; // adjust as needed
 
             scene.add(planet);
 
@@ -355,10 +359,10 @@ loadPlanet('models/Mars.glb', new THREE.Vector3(55, 0, 550), 150, 1, 0, '<h2>Wed
 loadPlanet('models/Saturn.glb', new THREE.Vector3(-60, 0, 475), 15, 1, 0, '<h2>Web Developer</h2><h3>Mid City Nursery Inc.</h3><h4>April 2022 - September 2022</h4> <ul> <li>Redesigned and coded the <a href="https://www.midcitynursery.com/" target="_blank">Mid City Nursery website</a> to add new functionality and improve customer experience.   </li> <li>Worked closely with the company owner to satisfy his expectations.    </li> <li>Utilized HTML, CSS, JavaScript, and jQuery to add features and design the website. </li> </ul>');
 
 loadPlanet('models/Jupiter.glb', new THREE.Vector3(90, -20, 130), .2, 1.1, 20, '<h2><a href="https://miko.photos/" target="_blank">Miko.Photos</a></h2><ul><li>My photography portfolio</li><li>Designed and programmed by me</li><li>Photos and videos also taken by me</li></ul>');
-loadPlanet('models/Venus.glb', new THREE.Vector3(135, -20, 80), .2, 1.1, 20, '<h2><a href="https://www.midcitynursery.com" target="_blank">MidCityNursery.com</a></h2><ul><li>Website I redesigned and programmed for local plant nursery Mid City Nursery Inc.</li><li>Worked closely with the company owner to satisfy his expectations.</li><li>To see the website before my redesign click <a href="https://web.archive.org/web/20210227004213/https://www.midcitynursery.com/index.htm">here</a></li></ul>');
+loadPlanet('models/Venus.glb', new THREE.Vector3(135, -20, 80), .2, 1.1, 20, '<h2><a href="https://www.midcitynursery.com" target="_blank">MidCityNursery.com</a></h2><ul><li>Website I redesigned and programmed for local plant nursery Mid City Nursery Inc.</li><li>Worked closely with the company owner to satisfy his expectations.</li><li>To see the website before my redesign click <a href="https://web.archive.org/web/20210227004213/https://www.midcitynursery.com/index.htm" target="_blank">here</a></li></ul>');
 
 loadPlanet('models/Moon.glb', new THREE.Vector3(-90, -10, 100), .3, .6, 11, '<h2>Key Skills</h2><ul><li>Experienced in Java, HTML, CSS, Python, C#, JavaScript, C, C++, Cypress, TensorFlow, YAML, SQL</li><li>Fluent in Spanish</li><li>Proficient in Adobe Lightroom, Premiere Pro</li></ul>');
-loadPlanet('models/Jupiter2.glb', new THREE.Vector3(-150, -10, 30), .4, 1, 12, '<h2>Bachelor\'s of Science</h2><h3>Software Engineering</h3><h4>Graduated December 2024</h4><ul><li>Maintained a 4.0 GPA</li><li>Received an embedded systems and a computer programming certificate</li></ul>');
+loadPlanet('models/Jupiter2.glb', new THREE.Vector3(-130, -10, 50), .4, 1, 12, '<h2>Bachelor\'s of Science</h2><h3>Software Engineering</h3><h4>Graduated December 2024</h4><ul><li>Maintained a 4.0 GPA</li><li>Received an embedded systems and a computer programming certificate</li></ul>');
 
 loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, 1, 0, '<h2>My cats</h2><img  src="images/cats.jpg" alt="Please Hire Me (image of my cats)" style="width: 100%; height: auto;">');
 
@@ -376,7 +380,7 @@ loader.load(
         asteroidBelt.position.set(-250, 0, -20);
 
         // Optionally, adjust rotation
-        asteroidBelt.rotation.y = Math.PI / 2; // adjust as needed
+        asteroidBelt.rotation.y = pi / 2; // adjust as needed
 
         scene.add(asteroidBelt);
     },
@@ -444,7 +448,7 @@ function checkPlanetProximity() {
     let isNearPlanet = false;
 
     // The distance threshold for interaction
-    const interactionDistance = 50; // Adjust as necessary
+    const interactionDistance = 55; // Adjust as necessary
 
     // Check each planet
     planets.forEach(planet => {
@@ -667,7 +671,7 @@ function onMouseMove(event) {
     yaw -= movementX * rotationSpeed;
     pitch += movementY * rotationSpeed;
 
-    const PI_2 = Math.PI / 2;
+    const PI_2 = pi / 2;
     pitch = Math.max(-PI_2, Math.min(PI_2, pitch));
 
     // Create quaternions for pitch and yaw
