@@ -5,6 +5,55 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({
     antialias: true
 });
+
+// Physics constants
+const ACCELERATION = 0.006; // How quickly we speed up
+const MAX_VELOCITY = 4.0; // Maximum speed
+const DRAG = 0.99; // Drag coefficient (1 = no drag, 0.99 = slight drag)
+const ROTATION_DRAG = 0.95; // Drag for rotation
+const BOOST_MULTIPLIER = 2; // How much faster boost makes you go
+
+// Movement variables
+let velocity = new THREE.Vector3(0, 0, 0); // Current velocity
+let rotationalVelocity = new THREE.Vector3(0, 0, 0); // Current rotational velocity
+const moveSpeed = 2;
+const rotationSpeed = 0.0005;
+let keypressed = {};
+// Mouse movement
+let yaw = 0;
+let pitch = 0;
+
+// Variable to store if the player is near a planet
+let nearbyPlanet = null;
+
+// Pointer lock setup
+const overlay = document.getElementById('overlay');
+const infoDiv = document.getElementById('info');
+
+// Array to store planet meshes
+const planets = [];
+// Array to store collision data for planets
+const planetColliders = [];
+
+// Declare the font variable in a scope accessible to your functions
+let font;
+
+// Initialize the FontLoader
+const fontLoader = new THREE.FontLoader();
+
+// Variables for the ship and model loader
+let ship;
+let shipModel;
+const loader = new THREE.GLTFLoader();
+
+// Audio setup
+let backgroundMusic;
+let isMuted = false;
+const audioListener = new THREE.AudioListener();
+
+
+
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -17,19 +66,13 @@ window.addEventListener('resize', () => {
 });
 
 
-
-// Audio setup
-let backgroundMusic;
-let isMuted = false;
-const audioListener = new THREE.AudioListener();
 camera.add(audioListener);
-
 // Create a function to load and setup music
 function setupBackgroundMusic() {
     backgroundMusic = new THREE.Audio(audioListener);
     const audioLoader = new THREE.AudioLoader();
 
-    audioLoader.load('Ressurections.mp3', function(buffer) {
+    audioLoader.load('Ressurections.mp3', function (buffer) {
         backgroundMusic.setBuffer(buffer);
         backgroundMusic.setLoop(true);
         backgroundMusic.setVolume(0.5);
@@ -102,7 +145,6 @@ setupBackgroundMusic()
 setupAudioControls()
 
 
-
 // Add lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
@@ -118,6 +160,7 @@ directionalLight.shadow.camera.far = 500;
 const sunLight = new THREE.PointLight(0xffddaa, 4, 1000);
 sunLight.position.set(400, 75, 0); // Position the light at the sun's position
 scene.add(sunLight);
+
 
 // Create stars
 function createStars() {
@@ -139,15 +182,8 @@ function createStars() {
     const starMesh = new THREE.Points(starGeometry, starMaterial);
     scene.add(starMesh);
 }
-
 createStars();
 
-
-
-// Variables for the ship and model loader
-let ship;
-let shipModel;
-const loader = new THREE.GLTFLoader();
 
 // Load the ship model
 loader.load(
@@ -156,6 +192,8 @@ loader.load(
     function (gltf) {
         ship = new THREE.Object3D();
         shipModel = gltf.scene;
+
+        ship.rotation.y = Math.PI; // Adjust rotation
 
         // Adjust scale, position, and rotation
         shipModel.scale.set(1, 1, 1);
@@ -184,15 +222,6 @@ loader.load(
 );
 
 
-
-
-// Initialize the FontLoader
-// Declare the font variable in a scope accessible to your functions
-let font;
-
-// Initialize the FontLoader
-const fontLoader = new THREE.FontLoader();
-
 // Load the font
 fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.json', function (loadedFont) {
     font = loadedFont;
@@ -206,7 +235,7 @@ fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.js
     createText('Other Websites', new THREE.Vector3(75, -10, 75), 0, Math.PI + .75, 0);
     createText('Work Experience', new THREE.Vector3(0, 25, 250), -0.3, Math.PI, 0);
     createText('Acquired Skills', new THREE.Vector3(-75, -10, 75), 0, Math.PI - .65, 0);
-    createText('Education', new THREE.Vector3(-120, -10, 20), 0, Math.PI /2, 0);
+    createText('Education', new THREE.Vector3(-120, -10, 20), 0, Math.PI / 2, 0);
 
 
     // Planet Labels
@@ -214,8 +243,8 @@ fontLoader.load('https://threejs.org/examples/fonts/gentilis_regular.typeface.js
     createText('Quality Assurance\n   Engineer Intern', new THREE.Vector3(-50, 5, 275), 0, Math.PI, 0);
     createText('Wedding Photographer\n     & Videographer', new THREE.Vector3(55, 0, 525), 0, Math.PI, 0);
     createText('Web Developer', new THREE.Vector3(-60, 0, 440), 0, Math.PI, 0);
-    createText('Miko.Photos', new THREE.Vector3(90, 0, 130), 0, Math.PI + .65, 0);
-    createText('MidCityNursery.com', new THREE.Vector3(160, 0, 110), 0, Math.PI + .65, 0);
+    createText('Miko.Photos', new THREE.Vector3(70, 0, 100), 0, Math.PI + .65, 0);
+    createText('MidCityNursery.com', new THREE.Vector3(110, 0, 60), 0, Math.PI + .65, 0);
 
 
 });
@@ -267,17 +296,8 @@ function createText(textString, position, rotationX, rotationY, rotationZ) {
 }
 
 
-
-
-
-
-// Array to store planet meshes
-const planets = [];
-// Array to store collision data for planets
-const planetColliders = []; 
-
 // Function to load a planet
-function loadPlanet(path, position, scale, colliderScale,colliderOffset, infoContent) {
+function loadPlanet(path, position, scale, colliderScale, colliderOffset, infoContent) {
     loader.load(
         path,
         function (gltf) {
@@ -290,7 +310,7 @@ function loadPlanet(path, position, scale, colliderScale,colliderOffset, infoCon
             planet.scale.set(scale, scale, scale);
             planet.position.copy(position);
 
-             // Create a collision sphere
+            // Create a collision sphere
             const boundingSphere = new THREE.Sphere(
                 planet.position.clone().add(new THREE.Vector3(0, colliderOffset, 0)), // Add an offset for some planets
                 colliderScale * 20 // Adjust this multiplier to match your planet's visible size
@@ -329,21 +349,21 @@ function loadPlanet(path, position, scale, colliderScale,colliderOffset, infoCon
     );
 }
 // Example positions behind the text (adjust as needed)
-loadPlanet('models/Earth.glb', new THREE.Vector3(-50, 0, 300),2,.9,0, '<h2>Quality Assurance Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day Saints </h3><h4>April 2023 - August 2023</h4><ul> <li>Tested components for <a href="https://www.churchofjesuschrist.org/comeuntochrist" target="_blank">ComeUntoChrist.org</a>, a worldwide website with over 50,000 monthly visitors. </li> <li>Worked in a team environment with experienced developers and managers. </li> <li>Utilized industry leading manual, automated, and performance testing methods including Cypress Automated Testing with YAML pipeline integration.</li> </ul>');
-loadPlanet('models/Neptune2.glb', new THREE.Vector3(50, -30, 345),1, 1.7,30, '<h2>Software Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day   </h3><h4>August 2023 - April 2024</h4><ul> <li>Maintained and developed components for <a href="https://www.churchofjesuschrist.org/comeuntochrist" target="_blank">ComeUntoChrist.org</a>, a worldwide website with over 50,000 monthly visitors  </li> <li>Worked in a team environment with experienced developers and managers.  </li> <li>Utilized JavaScript, Node JS, HTML, CSS to deliver refined results to our page visitors.</li> </ul>');
-loadPlanet('models/Mars.glb', new THREE.Vector3(55, 0, 550), 150,1,0, '<h2>Wedding Photographer & Videographer</h2><h3>Freelance</h3><h4>June 2021 - Present</h4><ul> <li>Wedding, Portrait, Couples, and Family Photoshoots.  </li> <li>Wedding videography for various clients.   </li> <li>Extensive experience using Adobe Lightroom, Premiere Pro, and Davinci Resolve. </li> </ul>');
-loadPlanet('models/Saturn.glb', new THREE.Vector3(-60, 0, 475), 15,1,0, '<h2>Web Developer</h2><h3>Mid City Nursery Inc.</h3><h4>April 2022 - September 2022</h4> <ul> <li>Redesigned and coded the <a href="https://www.midcitynursery.com/" target="_blank">Mid City Nursery website</a> to add new functionality and improve customer experience.   </li> <li>Worked closely with the company owner to satisfy his expectations.    </li> <li>Utilized HTML, CSS, JavaScript, and jQuery to add features and design the website. </li> </ul>');
+loadPlanet('models/Earth.glb', new THREE.Vector3(-50, 0, 300), 2, .9, 0, '<h2>Quality Assurance Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day Saints </h3><h4>April 2023 - August 2023</h4><ul> <li>Tested components for <a href="https://www.churchofjesuschrist.org/comeuntochrist" target="_blank">ComeUntoChrist.org</a>, a worldwide website with over 50,000 monthly visitors. </li> <li>Worked in a team environment with experienced developers and managers. </li> <li>Utilized industry leading manual, automated, and performance testing methods including Cypress Automated Testing with YAML pipeline integration.</li> </ul>');
+loadPlanet('models/Neptune2.glb', new THREE.Vector3(50, -30, 345), 1, 1.7, 30, '<h2>Software Engineer Intern</h2><h3>The Church of Jesus Christ of Latter-Day   </h3><h4>August 2023 - April 2024</h4><ul> <li>Maintained and developed components for <a href="https://www.churchofjesuschrist.org/comeuntochrist" target="_blank">ComeUntoChrist.org</a>, a worldwide website with over 50,000 monthly visitors  </li> <li>Worked in a team environment with experienced developers and managers.  </li> <li>Utilized JavaScript, Node JS, HTML, CSS to deliver refined results to our page visitors.</li> </ul>');
+loadPlanet('models/Mars.glb', new THREE.Vector3(55, 0, 550), 150, 1, 0, '<h2>Wedding Photographer & Videographer</h2><h3>Freelance</h3><h4>June 2021 - Present</h4><ul> <li>Wedding, Portrait, Couples, and Family Photoshoots.  </li> <li>Wedding videography for various clients.   </li> <li>Extensive experience using Adobe Lightroom, Premiere Pro, and Davinci Resolve. </li> </ul>');
+loadPlanet('models/Saturn.glb', new THREE.Vector3(-60, 0, 475), 15, 1, 0, '<h2>Web Developer</h2><h3>Mid City Nursery Inc.</h3><h4>April 2022 - September 2022</h4> <ul> <li>Redesigned and coded the <a href="https://www.midcitynursery.com/" target="_blank">Mid City Nursery website</a> to add new functionality and improve customer experience.   </li> <li>Worked closely with the company owner to satisfy his expectations.    </li> <li>Utilized HTML, CSS, JavaScript, and jQuery to add features and design the website. </li> </ul>');
 
+loadPlanet('models/Jupiter.glb', new THREE.Vector3(90, -20, 130), .2, 1.1, 20, '<h2><a href="https://miko.photos/" target="_blank">Miko.Photos</a></h2><ul><li>My photography portfolio</li><li>Designed and programmed by me</li><li>Photos and videos also taken by me</li></ul>');
+loadPlanet('models/Venus.glb', new THREE.Vector3(135, -20, 80), .2, 1.1, 20, '<h2><a href="https://www.midcitynursery.com" target="_blank">MidCityNursery.com</a></h2><ul><li>Website I redesigned and programmed for local plant nursery Mid City Nursery Inc.</li><li>Worked closely with the company owner to satisfy his expectations.</li><li>To see the website before my redesign click <a href="https://web.archive.org/web/20210227004213/https://www.midcitynursery.com/index.htm">here</a></li></ul>');
 
-loadPlanet('models/Jupiter.glb', new THREE.Vector3(105, -20, 150), .2,1.1,20, '<h2><a href="https://miko.photos/" target="_blank">Miko.Photos</a></h2><ul><li>My photography portfolio</li><li>Designed and programmed by me</li><li>Photos and videos also taken by me</li></ul>');
-loadPlanet('models/Venus.glb', new THREE.Vector3(180, -20, 130), .2,1.1,20, '<h2><a href="https://www.midcitynursery.com" target="_blank">MidCityNursery.com</a></h2><ul><li>Website I redesigned and programmed for local plant nursery Mid City Nursery Inc.</li><li>Worked closely with the company owner to satisfy his expectations.</li><li>To see the website before my redesign click <a href="https://web.archive.org/web/20210227004213/https://www.midcitynursery.com/index.htm">here</a></li></ul>');
+loadPlanet('models/Moon.glb', new THREE.Vector3(-90, -10, 100), .3, .6, 11, '<h2>Key Skills</h2><ul><li>Experienced in Java, HTML, CSS, Python, C#, JavaScript, C, C++, Cypress, TensorFlow, YAML, SQL</li><li>Fluent in Spanish</li><li>Proficient in Adobe Lightroom, Premiere Pro</li></ul>');
+loadPlanet('models/Jupiter2.glb', new THREE.Vector3(-150, -10, 30), .4, 1, 12, '<h2>Bachelor\'s of Science</h2><h3>Software Engineering</h3><h4>Graduated December 2024</h4><ul><li>Maintained a 4.0 GPA</li><li>Received an embedded systems and a computer programming certificate</li></ul>');
 
-loadPlanet('models/Moon.glb', new THREE.Vector3(-90, -10, 100), .3,.6,11, '<h2>Key Skills</h2><ul><li>Experienced in Java, HTML, CSS, Python, C#, JavaScript, C, C++, Cypress, TensorFlow, YAML, SQL</li><li>Fluent in Spanish</li><li>Proficient in Adobe Lightroom, Premiere Pro</li></ul>');
-loadPlanet('models/Jupiter2.glb', new THREE.Vector3(-150, -10, 30), .4,1,12, '<h2>Bachelor\'s of Science</h2><h3>Software Engineering</h3><h4>Graduated December 2024</h4><ul><li>Maintained a 4.0 GPA</li><li>Received an embedded systems and a computer programming certificate</li></ul>');
+loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, 1, 0, '<h2>My cats</h2><img  src="images/cats.jpg" alt="Please Hire Me (image of my cats)" style="width: 100%; height: auto;">');
 
-loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5,1,0, '<h2>My cats</h2><img  src="images/cats.jpg" alt="Please Hire Me (image of my cats)" style="width: 100%; height: auto;">');
+loadPlanet('models/Sun.glb', new THREE.Vector3(500, 0, 0), 1, 3, 80, '<h2>Why space?</h2><p>Space is cool</p>');
 
-loadPlanet('models/Sun.glb', new THREE.Vector3(500, 0, 0), 1,3,80, '<h2>Why space?</h2><p>Space is cool</p>');
 
 // Load the asteroid belt but don't add it to the planets array
 loader.load(
@@ -395,7 +415,6 @@ function checkPlanetCollisions() {
     }
 }
 
-
 // Add collision response function
 function handlePlanetCollision(planetSphere) {
     // Calculate the collision normal
@@ -417,12 +436,6 @@ function handlePlanetCollision(planetSphere) {
     interactWithPlanet(nearbyPlanet);
 }
 
-
-
-
-// Variable to store if the player is near a planet
-let nearbyPlanet = null;
-
 function checkPlanetProximity() {
     if (!ship) return; // Ensure ship is loaded
     if (planets.length === 0) return;
@@ -431,7 +444,7 @@ function checkPlanetProximity() {
     let isNearPlanet = false;
 
     // The distance threshold for interaction
-    const interactionDistance = 75; // Adjust as necessary
+    const interactionDistance = 50; // Adjust as necessary
 
     // Check each planet
     planets.forEach(planet => {
@@ -506,23 +519,6 @@ function displayPlanetInfo(planet) {
 }
 
 
-
-
-
-// Physics constants
-const ACCELERATION = 0.006; // How quickly we speed up
-const MAX_VELOCITY = 4.0; // Maximum speed
-const DRAG = 0.99; // Drag coefficient (1 = no drag, 0.99 = slight drag)
-const ROTATION_DRAG = 0.95; // Drag for rotation
-const BOOST_MULTIPLIER = 2; // How much faster boost makes you go
-
-// Movement variables
-let velocity = new THREE.Vector3(0, 0, 0); // Current velocity
-let rotationalVelocity = new THREE.Vector3(0, 0, 0); // Current rotational velocity
-const moveSpeed = 2;
-const rotationSpeed = 0.0005;
-let keypressed = {};
-
 // Event listeners
 document.addEventListener('keydown', (e) => {
     keypressed[e.key.toLowerCase()] = true;
@@ -542,25 +538,25 @@ function handleKeys() {
     right.applyQuaternion(ship.quaternion);
 
     // Apply acceleration based on input
-    if ((keypressed['w']||keypressed['arrowup']) && !keypressed[' ']) {
+    if ((keypressed['w'] || keypressed['arrowup']) && !keypressed[' ']) {
         velocity.add(forward.multiplyScalar(-ACCELERATION));
         if (shipModel) {
             shipModel.rotation.y += .004;
         }
     }
-    if (keypressed['s']||keypressed['arrowdown']) {
+    if (keypressed['s'] || keypressed['arrowdown']) {
         velocity.add(forward.multiplyScalar(ACCELERATION));
         if (shipModel) {
             shipModel.rotation.y += .002;
         }
     }
-    if (keypressed['a']||keypressed['arrowleft']) {
+    if (keypressed['a'] || keypressed['arrowleft']) {
         velocity.add(right.multiplyScalar(ACCELERATION / 2));
         if (shipModel) {
             shipModel.rotation.y += .002;
         }
     }
-    if (keypressed['d']||keypressed['arrowright']) {
+    if (keypressed['d'] || keypressed['arrowright']) {
         velocity.add(right.multiplyScalar(-ACCELERATION / 2));
         if (shipModel) {
             shipModel.rotation.y += .002;
@@ -606,13 +602,7 @@ function handleKeys() {
     checkPlanetCollisions();
 }
 
-// Mouse movement
-let yaw = 0;
-let pitch = 0;
 
-// Pointer lock setup
-const overlay = document.getElementById('overlay');
-const infoDiv = document.getElementById('info');
 // Add the center class initially
 infoDiv.classList.add('center');
 // Function to handle start click
@@ -663,10 +653,11 @@ function onPointerLockError() {
     overlay.style.display = ''; // Show overlay
     alert('Pointer Lock failed');
 }
-
 document.addEventListener('pointerlockchange', onPointerLockChange, false);
 document.addEventListener('pointerlockerror', onPointerLockError, false);
 
+
+// Mouse movement function
 function onMouseMove(event) {
     if (!ship) return;
 
@@ -691,6 +682,7 @@ function onMouseMove(event) {
     ship.quaternion.copy(quaternionYaw).multiply(quaternionPitch);
 }
 
+
 function animate() {
     requestAnimationFrame(animate);
     if (!ship) return;
@@ -701,7 +693,7 @@ function animate() {
         shipModel.rotation.y += .001;
     }
     rotatePlanets();
-    
+
 }
 
 animate();
