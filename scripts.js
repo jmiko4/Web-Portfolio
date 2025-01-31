@@ -225,7 +225,7 @@ loader.load(
 
 
 // Load the font
-fontLoader.load('Font.json', function (loadedFont) {
+fontLoader.load('fonts/Font.json', function (loadedFont) {
     font = loadedFont;
 
     // Create the initial text after the font is loaded
