@@ -362,7 +362,7 @@ loadPlanet('models/Jupiter.glb', new THREE.Vector3(90, -20, 130), .2, 1.1, 20, '
 loadPlanet('models/Venus.glb', new THREE.Vector3(135, -20, 80), .2, 1.1, 20, '<h2><a href="https://www.midcitynursery.com" target="_blank">MidCityNursery.com</a></h2><ul><li>Website I redesigned and programmed for local plant nursery Mid City Nursery Inc.</li><li>Worked closely with the company owner to satisfy his expectations.</li><li>To see the website before my redesign click <a href="https://web.archive.org/web/20210227004213/https://www.midcitynursery.com/index.htm" target="_blank">here</a></li></ul>');
 
 loadPlanet('models/Moon.glb', new THREE.Vector3(-90, -10, 100), .3, .6, 11, '<h2>Key Skills</h2><ul><li>Experienced in Java, HTML, CSS, Python, C#, JavaScript, C, C++, Cypress, TensorFlow, YAML, SQL</li><li>Fluent in Spanish</li><li>Proficient in Adobe Lightroom, Premiere Pro</li></ul>');
-loadPlanet('models/Jupiter2.glb', new THREE.Vector3(-130, -10, 50), .4, 1, 12, '<h2>Bachelor\'s of Science</h2><h3>Software Engineering</h3><h4>Graduated December 2024</h4><ul><li>Maintained a 4.0 GPA</li><li>Received an embedded systems and a computer programming certificate</li></ul>');
+loadPlanet('models/Jupiter2.glb', new THREE.Vector3(-130, -10, 50), .4, 1, 12, '<h2>Bachelor\'s of Science</h2><h3>Software Engineering</h3><ul><li>Graduated December 2024</li><li>Maintained a 4.0 GPA</li><li>Received an embedded systems and a computer programming certificate</li></ul>');
 
 loadPlanet('models/WSS.glb', new THREE.Vector3(0, 0, -200), 5, 1, 0, '<h2>My cats</h2><img  src="images/cats.jpg" alt="Please Hire Me (image of my cats)" style="width: 100%; height: auto;">');
 
