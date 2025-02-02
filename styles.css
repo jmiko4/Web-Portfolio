@@ -211,10 +211,24 @@ canvas {
 #planetInfoContent h3 {
     margin-top: 0;
     color: #222;
+    font-style: italic;
 }
 
 #planetInfoContent a {
     text-decoration: none;
+}
+
+.planetImg{
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px grey;
+    transition: 0.3s ease;
+
+}
+.planetImg:hover{
+    transform:scale(1.05);
+    transition: 0.3s ease;
 }
 
 /* Fade-in Animation */
