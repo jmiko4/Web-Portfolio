@@ -234,7 +234,7 @@ fontLoader.load('fonts/Font.json', function (loadedFont) {
 
     // Group Labels
     createText('Acquired Skills', new THREE.Vector3(-75, -10, 75), 0, pi - .65, 0);
-    createText('Education', new THREE.Vector3(-100, -13, 30), 0, pi -.85 , 0);
+    createText('Education', new THREE.Vector3(-100, -13, 30), 0, pi - .85, 0);
 
 
     // Planet Labels

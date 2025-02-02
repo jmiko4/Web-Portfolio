@@ -51,7 +51,7 @@ canvas {
     flex-direction: row;
     position: absolute;
     opacity: 1;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease-in;
     font-size: 32px;
     color: white;
     z-index: 1;
