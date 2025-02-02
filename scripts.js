@@ -53,6 +53,8 @@ const loader = new THREE.GLTFLoader();
 let backgroundMusic;
 let isMuted = false;
 const audioListener = new THREE.AudioListener();
+setupBackgroundMusic()
+setupAudioControls()
 
 
 
@@ -89,7 +91,7 @@ function setupAudioControls() {
     audioControl.id = 'audioControl';
     audioControl.innerHTML = `
         <div class="audio-panel">
-            <button id="toggleMusic"><i class="fas fa-volume-up"></i></button>
+            <button id="toggleMusic"><i class="fas fa-volume-mute"></i></button>
             <input type="range" id="volumeSlider" min="0" max="100" value="50">
         </div>
     `;
@@ -143,8 +145,7 @@ function adjustVolume(e) {
     backgroundMusic.setVolume(volume);
 }
 
-setupBackgroundMusic()
-setupAudioControls()
+
 
 
 // Add lighting
@@ -248,6 +249,7 @@ fontLoader.load('fonts/Font.json', function (loadedFont) {
     //Directions
     createText('↑ Other Websites ↑', new THREE.Vector3(70, -50, 55), pi / 2 - .4, pi + .4, .7);
     createText('       Work    \n↑   Experience   ↑', new THREE.Vector3(0, -30, 150), pi / 2 - .7, pi, 0);
+    createText('Collide with a planet\nor press E to interact', new THREE.Vector3(0, 45, 150), -0.3, pi, 0);
     createText('↑ Qualifications ↑', new THREE.Vector3(-70, -50, 55), pi / 2 - .4, pi - .4, -.7);
 
 
@@ -645,12 +647,14 @@ function onPointerLockChange() {
             // Only add mousemove listener if planet info overlay is not displayed
             document.addEventListener('mousemove', onMouseMove, false);
         }
+        
     } else {
         document.removeEventListener('mousemove', onMouseMove, false);
         if (overlay.style.display === 'none' && planetInfoOverlay.style.display === 'none') {
             overlay.style.display = ''; // Show start overlay if not in planet info
         }
     }
+    
 }
 
 function onPointerLockError() {

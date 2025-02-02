@@ -229,3 +229,40 @@ canvas {
         opacity: 1;
     }
 }
+
+/* Mobile message */
+@media (max-width: 1024px) {
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+    }
+
+    #main-content {
+        display: none;
+    }
+
+    #mobile-message {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: black; /* Can change to match your site */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        z-index: 9999; /* Ensures it stays on top */
+        font-size: 24px;
+        color:#ffffff;
+    }
+}
+
+@media (min-width: 1025px) {
+    #mobile-message {
+        display: none;
+    }
+}

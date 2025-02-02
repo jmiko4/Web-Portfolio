@@ -5,37 +5,42 @@
     <title>Space Portfolio</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link rel="preload" href="fonts/VCROSDMono.woff" as="font" type="font/woff" crossorigin>
 </head>
 
 <body>
-    <div id="info">
-        <div id="info-left">
-            <img src="images/wasd.png" alt="wasd keys" style="max-width: 20%; height: auto; filter: invert(1);">
-            <img src="images/mouse.png" alt="mouse" style="max-width: 20%; height: auto; filter: invert(1);">
-            <img src="images/spacebar.png" alt="space" style="max-width: 20%; height: auto; filter: invert(1);">
-            <img src="images/r-key.png" alt="r to reset" style="max-width: 20%; height: auto; filter: invert(1);">
-            <img src="images/volume.png" alt="volume up" style="max-width: 20%; height: auto; filter: invert(1);">
-            <img src="images/esc.png" alt="esc key" style="max-width: 20%; height: auto; filter: invert(1);">
+    <div id="mobile-message">
+        This website is not currently available on mobile devices. Please visit from a desktop.
+    </div>
+    <div id="main-content">
+        <div id="info">
+            <div id="info-left">
+                <img src="images/wasd.png" alt="wasd keys" style="max-width: 20%; height: auto; filter: invert(1);">
+                <img src="images/mouse.png" alt="mouse" style="max-width: 20%; height: auto; filter: invert(1);">
+                <img src="images/spacebar.png" alt="space" style="max-width: 20%; height: auto; filter: invert(1);">
+                <img src="images/r-key.png" alt="r to reset" style="max-width: 20%; height: auto; filter: invert(1);">
+                <img src="images/volume.png" alt="volume up" style="max-width: 20%; height: auto; filter: invert(1);">
+                <img src="images/esc.png" alt="esc key" style="max-width: 20%; height: auto; filter: invert(1);">
+            </div>
+            <div id="info-right">
+                <p>Use WASD keys to move</p>
+                <p>Mouse to look around</p>
+                <p>Hold space to BOOST.</p>
+                <p>R will reset the ship to its original position</p>
+                <p>Click on the volume icon to toggle music</p>
+                <p>Press esc to show your cursor</p>
+            </div>
         </div>
-        <div id="info-right">
-            <p>Use WASD keys to move</p>
-            <p>Mouse to look around</p>
-            <p>Hold space to BOOST.</p>
-            <p>R will reset the ship to its original position</p>
-            <p>Click on the volume icon to toggle music</p>
-            <p>Press esc to show your cursor</p>
+        <div id="overlay">Click to start</div>
+        <div id="interactionPrompt">Press E to interact</div>
+        <!-- Planet info overlay -->
+        <div id="planetInfoOverlay" style="display: none;">
+            <div id="planetInfoContent">
+                <button id="closeOverlayButton" class="close-button"><i class="fas fa-times"></i></button>
+                <!-- Planet information will be injected here -->
+            </div>
         </div>
     </div>
-    <div id="overlay">Click to start</div>
-    <div id="interactionPrompt">Press E to interact</div>
-    <!-- Planet info overlay -->
-    <div id="planetInfoOverlay" style="display: none;">
-        <div id="planetInfoContent">
-            <button id="closeOverlayButton" class="close-button"><i class="fas fa-times"></i></button>
-            <!-- Planet information will be injected here -->
-        </div>
-    </div>
+    
     <!-- Include Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Include GLTFLoader -->
